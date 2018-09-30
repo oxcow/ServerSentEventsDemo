@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./base.js"></script>
+    <title>Simple Data | Html5 Server Send Event Demo</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    var count = 0;
+
+    if (typeof(EventSource) !== "undefined") {
+
+        var evtSource = new EventSource("/html5/sse/quick_start");
+
+        evtSource.onopen = function (event) {
+            outPrint('output', "...connected...");
+        }
+
+        evtSource.onmessage = function (event) {
+            outPrint('output', event.data);
+            ++count;
+
+            if (count > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close(); // 关闭链接
+            }
+        }
+
+        evtSource.onerror = function (event) {
+            outPrint('output', 'Error:' + this.readyState + ' > ' + this);
+        }
+
+    } else {
+        console.warn('Sorry! No server-sent events support.');
+    }
+</script>
+<h1>Event Source 快速入门</h1>
+<p>先直观的感受下吧.....</p>
+<div id="output"></div>
+</body>
+</html>

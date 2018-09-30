@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./base.js"></script>
+    <title>Customer Event | Html5 Server Send Event Demo</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    var count = 0;
+
+    if (typeof(EventSource) !== "undefined") {
+
+        var evtSource = new EventSource("/html5/sse/customer_event");
+
+        evtSource.onopen = function (event) {
+            outPrint('output', "...connected...");
+        }
+
+        evtSource.onmessage = function (event) {
+            alert("不会被触发！");
+        }
+
+        evtSource.addEventListener("event_one", function () {
+            outPrint('output', 'EventOne:' + event.data, 'green');
+            if (count++ > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close();
+            }
+        });
+
+        evtSource.addEventListener("event_two", function () {
+            outPrint('output', 'EventTwo:' + event.data, 'red');
+            if (count++ > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close();
+            }
+        });
+
+        evtSource.onerror = function (event) {
+            if (this.readyState == 2) {
+                outPrint('output', 'Error:' + this.readyState + ' > ' + JSON.stringify(event.data));
+                this.close();
+            }
+        }
+
+    } else {
+        console.warn('Sorry! No server-sent events support.');
+    }
+</script>
+<h1>自定义事件</h1>
+<p>使用addEventListener监听指定event类型的消息</p>
+<div id="output"></div>
+</body>
+</html>

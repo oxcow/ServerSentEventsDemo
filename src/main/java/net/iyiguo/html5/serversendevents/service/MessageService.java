@@ -1,0 +1,94 @@
+package net.iyiguo.html5.serversendevents.service;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import net.iyiguo.html5.serversendevents.domain.Message;
+import net.iyiguo.html5.serversendevents.enums.MessageTypeEnum;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+
+@Component
+public class MessageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
+
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+    private Map<Long, Message> messageMap = Maps.newConcurrentMap();
+
+    private AtomicLong atomicLong = new AtomicLong(1);
+
+    @PostConstruct
+    public void init() {
+        autoProduceMessage();
+    }
+
+    public void addMessage(Message message) {
+        messageMap.put(message.getId(), message);
+    }
+
+
+    public void addPublishNotice(String notice) {
+        Long id = atomicLong.getAndIncrement();
+        long ttl = RandomUtils.nextLong(10, 20);
+        Message message = new Message(id, notice, LocalDateTime.now(), ttl, MessageTypeEnum.ADMIN_NOTICE);
+        messageMap.put(id, message);
+    }
+
+    public Message getCeilingMessage(Long id) {
+        if (messageMap.containsKey(id)) return messageMap.get(id);
+
+        Optional<Long> ceilingKey = messageMap.keySet().stream()
+                .filter((Long obj) -> obj.longValue() > id.longValue())
+                .findFirst();
+
+        return ceilingKey.isPresent() ? messageMap.get(ceilingKey.get()) : null;
+    }
+
+    @Scheduled(cron = "2/15 * * * * ?")
+    private void autoProduceMessage() {
+
+        Long id = atomicLong.getAndIncrement();
+
+        String context = RandomStringUtils.randomAlphanumeric(20);
+
+        long ttl = RandomUtils.nextLong(10, 20);
+
+        Message message = new Message(id, context + id, LocalDateTime.now(), ttl, MessageTypeEnum.BROADCAST);
+
+        messageMap.putIfAbsent(id, message);
+
+        logger.info("Auto Produce Message: {}", message.toString());
+    }
+
+    @Scheduled(cron = "5/15 * * * * ?")
+    private void cleanExpired() {
+        Set<Long> expiredKey = Sets.newHashSet();
+        for (Map.Entry<Long, Message> longMessageEntry : messageMap.entrySet()) {
+            Message message = longMessageEntry.getValue();
+            if (LocalDateTime.now().isAfter(message.getCreateTime().plusSeconds(message.getTtl()))) {
+                expiredKey.add(longMessageEntry.getKey());
+            }
+        }
+
+        logger.info("Auto Clean Expired Message Ids: {}", expiredKey);
+
+        if (!expiredKey.isEmpty()) {
+            expiredKey.forEach(messageMap::remove);
+        }
+    }
+}

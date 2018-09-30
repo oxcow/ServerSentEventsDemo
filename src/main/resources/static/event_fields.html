@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./base.js"></script>
+    <title>Simple Full Data | Html5 Server Send Event Demo</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    if (typeof(EventSource) !== "undefined") {
+
+        var evtSource = new EventSource("/html5/sse/event_fields");
+
+        evtSource.onopen = function (event) {
+            //outPrint('output', "...connected...");
+        }
+
+        evtSource.onmessage = function (event) {
+
+            outPrint('output', "lastEventId:" + event.lastEventId + ", " + event.data);
+
+            if (event.lastEventId > 10) {
+                outPrint('output', "ID大于10，主动关闭");
+                this.close(); // 关闭链接
+            }
+        }
+
+        evtSource.onerror = function (event) {
+            if (this.readyState == 2) {
+                outPrint('output', 'Error:' + this.readyState + ' > ' + JSON.stringify(event.data));
+                this.close();
+            }
+        }
+
+    } else {
+        console.warn('Sorry! No server-sent events support.');
+    }
+
+</script>
+<h1>事件属性</h1>
+<div>测试事件流格式. 主要属性字段 id 和 retry</div>
+<ul>
+    <li>事件ID，可在客户端通过 lastEventId 获取</li>
+    <li>retry指定客户端重新链接服务时间。对下次链接有效！</li>
+    <li style="color:red">注意打印日志的时间间隔</li>
+</ul>
+<div id="output"></div>
+</body>
+</html>

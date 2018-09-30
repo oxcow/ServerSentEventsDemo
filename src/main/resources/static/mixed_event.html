@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./base.js"></script>
+    <title>Mixed Event | Html5 Server Send Event Demo</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    var count = 0;
+    if (typeof(EventSource) !== "undefined") {
+
+        var evtSource = new EventSource("/html5/sse/mixed_event");
+
+        evtSource.onopen = function (event) {
+            outPrint('output', "...connected...");
+        }
+
+        evtSource.onmessage = function (event) {
+            outPrint('output', '未指定Event消息:' + event.data, 'pink');
+            if (count++ > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close();
+            }
+        }
+
+        evtSource.addEventListener("event_one", function () {
+            outPrint('output', 'EventOne:' + event.data, 'green');
+            if (count++ > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close();
+            }
+        });
+
+        evtSource.addEventListener("event_two", function () {
+            outPrint('output', 'EventTwo:' + event.data, 'red');
+            if (count++ > 10) {
+                outPrint('output', "超过指定次数，主动关闭");
+                this.close();
+            }
+        });
+
+        evtSource.onerror = function (event) {
+            if (this.readyState == 2) {
+                outPrint('output', 'Error:' + this.readyState + ' > ' + JSON.stringify(event.data));
+                this.close();
+            }
+        }
+
+    } else {
+        console.warn('Sorry! No server-sent events support.');
+    }
+
+</script>
+<h1>混合型消息</h1>
+<p>混合消息。一次发送多种event类型的消息。</p>
+<div id="output"></div>
+</body>
+</html>
