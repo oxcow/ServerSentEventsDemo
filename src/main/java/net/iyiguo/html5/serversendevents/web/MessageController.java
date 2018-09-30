@@ -1,18 +1,12 @@
 package net.iyiguo.html5.serversendevents.web;
 
-import com.google.common.collect.Maps;
 import net.iyiguo.html5.serversendevents.domain.Message;
 import net.iyiguo.html5.serversendevents.service.CacheDBService;
 import net.iyiguo.html5.serversendevents.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/message")
@@ -26,19 +20,23 @@ public class MessageController {
     @Autowired
     private CacheDBService cacheDBService;
 
-    private Map<String, Long> userLastMessageIdMap = Maps.newConcurrentMap();
-
     @RequestMapping("/broadcast/{name}")
     @ResponseBody
-    public String broadcast(@PathVariable String name) {
-        Long lastEventId = userLastMessageIdMap.getOrDefault(name, -1L);
+    public String broadcast(@PathVariable String name, @RequestHeader(value = "Last-Event-ID", required = false) Long lastEventId) {
+
+        if (lastEventId == null) lastEventId = -1L;
+
         Long nextEventId = lastEventId + 1;
+
+        logger.info("「{}」get broadcast message last event id is: {}", name, lastEventId);
+
         Message message = messageService.getCeilingMessage(nextEventId);
         if (message == null) {
-            return ": no auto produce broadcast need to be sent. ";
+            logger.warn("「{}」, no broadcast message for you!", name);
+            return ": No auto produce broadcast message need to be sent."; // comment message
         }
 
-        logger.info("「{}」Get produce auto. fetch_ID:{}, message: {}", name, nextEventId, message.toString());
+        logger.info("「{}」get broadcast message. next event id is: {}, message: {}", name, nextEventId, message.toString());
 
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id: ").append(message.getId()).append("\n");
@@ -57,8 +55,6 @@ public class MessageController {
         }
 
         stringBuilder.append("\n\n");
-
-        userLastMessageIdMap.put(name, message.getId());
 
         return stringBuilder.toString();
     }

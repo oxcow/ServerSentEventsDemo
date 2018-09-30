@@ -32,7 +32,7 @@
 
             evtSource.onerror = function (event) {
                 if (this.readyState == 2) {
-                    outPrint('output', 'Error:' + this.readyState + ' > ' + JSON.stringify(event.data));
+                    outPrint('output', 'Error:' + this.readyState + ' > ' + JSON.stringify(this));
                     this.close();
                 }
             }
