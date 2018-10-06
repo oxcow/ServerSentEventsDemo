@@ -25,22 +25,13 @@ public class MessageService {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
-
-    private ExecutorService executorService = Executors.newFixedThreadPool(1);
-
     private Map<Long, Message> messageMap = Maps.newConcurrentMap();
 
     private AtomicLong atomicLong = new AtomicLong(1);
 
-    @PostConstruct
-    public void init() {
-        autoProduceMessage();
-    }
-
     public void addMessage(Message message) {
         messageMap.put(message.getId(), message);
     }
-
 
     public void addPublishNotice(String notice) {
         Long id = atomicLong.getAndIncrement();

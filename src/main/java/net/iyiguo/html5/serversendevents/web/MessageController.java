@@ -31,6 +31,7 @@ public class MessageController {
         logger.info("「{}」get broadcast message last event id is: {}", name, lastEventId);
 
         Message message = messageService.getCeilingMessage(nextEventId);
+
         if (message == null) {
             logger.warn("「{}」, no broadcast message for you!", name);
             return ": No auto produce broadcast message need to be sent."; // comment message
