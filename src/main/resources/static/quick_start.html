@@ -8,8 +8,6 @@
 <body>
 <script type="text/javascript">
 
-    var count = 0;
-
     if (typeof(EventSource) !== "undefined") {
 
         var evtSource = new EventSource("/html5/sse/quick_start");
@@ -19,13 +17,8 @@
         }
 
         evtSource.onmessage = function (event) {
+            //console.log(event);
             outPrint('output', event.data);
-            ++count;
-
-            if (count > 10) {
-                outPrint('output', "超过指定次数，主动关闭");
-                this.close(); // 关闭链接
-            }
         }
 
         evtSource.onerror = function (event) {

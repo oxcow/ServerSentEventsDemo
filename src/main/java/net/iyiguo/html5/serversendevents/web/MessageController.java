@@ -21,7 +21,6 @@ public class MessageController {
     private CacheDBService cacheDBService;
 
     @RequestMapping("/broadcast/{name}")
-    @ResponseBody
     public String broadcast(@PathVariable String name, @RequestHeader(value = "Last-Event-ID", required = false) Long lastEventId) {
 
         if (lastEventId == null) lastEventId = -1L;

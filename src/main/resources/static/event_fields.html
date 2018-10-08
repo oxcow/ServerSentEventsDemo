@@ -17,13 +17,7 @@
         }
 
         evtSource.onmessage = function (event) {
-
             outPrint('output', "lastEventId:" + event.lastEventId + ", " + event.data);
-
-            if (event.lastEventId > 10) {
-                outPrint('output', "ID大于10，主动关闭");
-                this.close(); // 关闭链接
-            }
         }
 
         evtSource.onerror = function (event) {

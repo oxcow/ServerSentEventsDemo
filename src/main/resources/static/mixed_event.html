@@ -27,18 +27,10 @@
 
         evtSource.addEventListener("event_one", function () {
             outPrint('output', 'EventOne:' + event.data, 'green');
-            if (count++ > 10) {
-                outPrint('output', "超过指定次数，主动关闭");
-                this.close();
-            }
         });
 
         evtSource.addEventListener("event_two", function () {
             outPrint('output', 'EventTwo:' + event.data, 'red');
-            if (count++ > 10) {
-                outPrint('output', "超过指定次数，主动关闭");
-                this.close();
-            }
         });
 
         evtSource.onerror = function (event) {
