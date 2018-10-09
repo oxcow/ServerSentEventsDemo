@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="./base.js"></script>
+    <title>Quick Start | Html5 Server Send Event Demo</title>
+</head>
+<body>
+<script type="text/javascript">
+
+    if (typeof(EventSource) !== "undefined") {
+
+        var evtSource = new EventSource("/html5/sse/quick_start_easy");
+
+        evtSource.onopen = function (event) {
+            outPrint('output', "...connected...");
+        }
+
+        evtSource.onmessage = function (event) {
+            //console.log(event);
+            outPrint('output', event.data);
+        }
+
+        evtSource.onerror = function (event) {
+            outPrint('output', 'Error:' + this.readyState + ' > ' + this);
+        }
+
+    } else {
+        console.warn('Sorry! No server-sent events support.');
+    }
+</script>
+<h1>Event Source 快速入门</h1>
+<p>服务端使用SseEmitter对象处理</p>
+<div id="output"></div>
+</body>
+</html>
