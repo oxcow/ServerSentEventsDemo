@@ -1,3 +1,27 @@
 spring:
-  freemarker:
-    cache: false
+    freemarker:
+        cache: false
+
+logging.level.net.iyiguo.html5.serversendevents: DEBUG
+
+
+thread.sleep.milliseconds: 5000
+
+cache:
+    system_users:
+    -   id: 1
+        name: admin
+        pass: null
+        role: ADMINISTRATOR
+    -   id: 2
+        name: jack
+        pass: null
+        role: GUEST
+    -   id: 3
+        name: joe
+        pass: null
+        role: GUEST
+    -   id: 4
+        name: grace
+        pass: null
+        role: GUEST

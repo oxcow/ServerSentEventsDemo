@@ -2,16 +2,16 @@ package net.iyiguo.html5.serversendevents.domain;
 
 import net.iyiguo.html5.serversendevents.enums.RoleEnum;
 
-public class User {
+public class SystemUser {
     private Integer id;
     private String name;
     private String pass;
     private RoleEnum role;
 
-    public User() {
+    public SystemUser() {
     }
 
-    public User(Integer id, String name, String pass, RoleEnum role) {
+    public SystemUser(Integer id, String name, String pass, RoleEnum role) {
         this.id = id;
         this.name = name;
         this.pass = pass;
@@ -53,7 +53,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "SystemUser{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", pass='" + pass + '\'' +

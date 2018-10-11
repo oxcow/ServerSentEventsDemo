@@ -1,69 +1,55 @@
 package net.iyiguo.html5.serversendevents.service;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.iyiguo.html5.serversendevents.domain.User;
-import net.iyiguo.html5.serversendevents.enums.RoleEnum;
+import net.iyiguo.html5.serversendevents.config.CacheProperties;
+import net.iyiguo.html5.serversendevents.domain.SystemUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
 public class CacheDBService {
 
-    public static final Logger logger = LoggerFactory.getLogger(CacheDBService.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(CacheDBService.class);
 
-    private List<User> allUsers;
+    private Map<Integer, SystemUser> loginInUsers;
 
-    private Map<Integer, User> loginInUsers;
+    @Autowired
+    private CacheProperties cacheProperties;
 
     @PostConstruct
     public void init() {
-        allUsers = Lists.newArrayList();
-        allUsers.add(new User(1, "admin", null, RoleEnum.ADMINISTRATOR));
-        allUsers.add(new User(2, "jack", null, RoleEnum.GUEST));
-        allUsers.add(new User(3, "joe", null, RoleEnum.GUEST));
-        allUsers.add(new User(4, "grace", null, RoleEnum.GUEST));
-
         loginInUsers = Maps.newConcurrentMap();
     }
 
-    public ImmutableMap<Integer, User> getAllLoginUsers() {
-        return ImmutableMap.copyOf(loginInUsers);
+    public Optional<SystemUser> getByNameAndPass(String name, String pass) {
+        if (cacheProperties.getSystemUsers().isEmpty()) return Optional.empty();
+        return cacheProperties.getSystemUsers().stream()
+                .filter(u -> u.getName().equals(name))
+                .findFirst();
     }
 
-    public ImmutableList<User> getAllUsers() {
-        return ImmutableList.copyOf(allUsers);
-    }
-
-    public Optional<User> getByNameAndPass(String name, String pass) {
-        if (allUsers.isEmpty()) return Optional.empty();
-        return allUsers.stream()
-                .filter(u -> u.getName().equals(name)).findFirst();
-    }
-
-
-    public boolean addToLogin(User user) {
-        if (user != null && user.getId() != null) {
-            if (loginInUsers.containsKey(user.getId())) {
-                logger.warn("用户已经登录 {}", user);
+    public boolean addToLogin(SystemUser systemUser) {
+        if (systemUser != null && systemUser.getId() != null) {
+            if (loginInUsers.containsKey(systemUser.getId())) {
+                LOGGER.warn("【{}】是已登录用户. 当前在线人数: {}", systemUser.getName(), loginInUsers.size());
             } else {
-                loginInUsers.put(user.getId(), user);
+                loginInUsers.put(systemUser.getId(), systemUser);
+                LOGGER.debug("【{}】被添加到已登录列表中. 当前在线人数: {}", systemUser.getName(), loginInUsers.size());
             }
         }
         return true;
     }
 
-    public boolean removeFromLogin(User user) {
-        if (user != null && user.getId() != null) {
-            loginInUsers.remove(user.getId());
+    public boolean removeFromLogin(SystemUser systemUser) {
+        if (systemUser != null && systemUser.getId() != null) {
+            loginInUsers.remove(systemUser.getId());
+            LOGGER.debug("【{}】退出登录. 当前在线人数: {}", systemUser.getName(), loginInUsers.size());
         }
         return true;
     }

@@ -1,8 +1,10 @@
 package net.iyiguo.html5.serversendevents.web;
 
+import net.iyiguo.html5.serversendevents.util.ThreadUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -16,10 +18,13 @@ import java.io.PrintWriter;
 public class SayHiController {
     public static final Logger LOGGER = LoggerFactory.getLogger(SayHiController.class);
 
+    @Value("${thread.sleep.milliseconds}")
+    private final Long SLEEP_TIME_MILLISECONDS = 2000L;
+
     @RequestMapping("/event_fields")
     public void eventFields(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        LOGGER.info("request event fields demo......");
+        LOGGER.debug("request event fields demo......");
 
         // 设置响应头
         res.setContentType("text/event-stream");
@@ -47,11 +52,7 @@ public class SayHiController {
             writer.write(messageSb.toString());
             writer.flush();
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
+            ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
         }
 
         writer.close();
@@ -61,7 +62,7 @@ public class SayHiController {
     @RequestMapping("/customer_event")
     public void customerEvent(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        LOGGER.info("request customer event demo......");
+        LOGGER.debug("request customer event demo......");
 
         // 设置响应头
         res.setContentType("text/event-stream");
@@ -98,11 +99,8 @@ public class SayHiController {
             writer.write(message);
             writer.flush();
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+            ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
 
-            }
         }
         writer.close();
     }
@@ -110,7 +108,7 @@ public class SayHiController {
     @RequestMapping("/mixed_event")
     public void mixedEvent(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        LOGGER.info("request mixed event demo......");
+        LOGGER.debug("request mixed event demo......");
 
         // 设置响应头
         res.setContentType("text/event-stream");
@@ -127,11 +125,7 @@ public class SayHiController {
             writer.write(message);
             writer.flush();
 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
+            ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
         }
 
         writer.close();

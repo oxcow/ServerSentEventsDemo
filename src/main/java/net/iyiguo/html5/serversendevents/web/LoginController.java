@@ -1,26 +1,30 @@
 package net.iyiguo.html5.serversendevents.web;
 
-import net.iyiguo.html5.serversendevents.domain.User;
+import net.iyiguo.html5.serversendevents.domain.SystemUser;
 import net.iyiguo.html5.serversendevents.enums.RoleEnum;
 import net.iyiguo.html5.serversendevents.service.CacheDBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/login/")
 public class LoginController {
-    public static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private CacheDBService cacheDBService;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @RequestMapping("/index")
     public String login() {
@@ -28,21 +32,21 @@ public class LoginController {
     }
 
     @RequestMapping("/in")
-    public String loginIn(String name, Model model) {
+    public String loginIn(String name, Model model, HttpServletResponse response) {
 
-        Optional<User> optionalUser = cacheDBService.getByNameAndPass(name, null);
+        Optional<SystemUser> optionalUser = cacheDBService.getByNameAndPass(name, null);
 
-        logger.info("User: {} login result: {}", name, optionalUser.isPresent());
+        LOGGER.debug("【{}】请求登录广播系统. allow? {}", name, optionalUser.isPresent());
 
         if (optionalUser.isPresent()) {
 
-            User user = optionalUser.get();
+            SystemUser systemUser = optionalUser.get();
 
-            cacheDBService.addToLogin(user);
+            cacheDBService.addToLogin(systemUser);
 
-            model.addAttribute("user", user);
+            model.addAttribute("systemUser", systemUser);
 
-            if (RoleEnum.ADMINISTRATOR == user.getRole()) {
+            if (RoleEnum.ADMINISTRATOR == systemUser.getRole()) {
                 return "publish_notice";
             }
 
@@ -55,11 +59,16 @@ public class LoginController {
     }
 
     @RequestMapping("/out/{name}")
-    public boolean loginOut(@PathVariable String name) {
-        Optional<User> optionalUser = cacheDBService.getByNameAndPass(name, null);
+    public String loginOut(@PathVariable String name) {
+        Optional<SystemUser> optionalUser = cacheDBService.getByNameAndPass(name, null);
         if (optionalUser.isPresent()) {
             cacheDBService.removeFromLogin(optionalUser.get());
         }
-        return true;
+
+        publisher.publishEvent(optionalUser.get().getName());
+
+        LOGGER.debug("发送【{}】登出系统消息", name);
+
+        return "login";
     }
 }

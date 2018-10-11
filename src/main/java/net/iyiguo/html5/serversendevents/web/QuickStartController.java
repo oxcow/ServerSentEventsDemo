@@ -1,7 +1,9 @@
 package net.iyiguo.html5.serversendevents.web;
 
+import net.iyiguo.html5.serversendevents.util.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,10 @@ public class QuickStartController {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(QuickStartController.class);
 
+    // 如果声明为 final 基本类型，那么传递到其他方法使用时，将得不到覆盖后的值。虽然debug时看到的是覆盖后的值。
+    @Value("${thread.sleep.milliseconds}")
+    private final Long SLEEP_TIME_MILLISECONDS = 2000L;
+
     /**
      * 1. 设置response header and encoding
      * 2. 推送指定次数的数据后，服务器主动关闭链接。
@@ -36,7 +42,7 @@ public class QuickStartController {
     @RequestMapping("/quick_start")
     public void quickStart(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
-        LOGGER.info("request quick start demo......");
+        LOGGER.debug("request quick start demo......");
 
         // 设置响应头
         res.setContentType("text/event-stream");
@@ -52,12 +58,7 @@ public class QuickStartController {
         for (int i = 1; i < 6; i++) {
             writer.write("data: " + i + ", hello for server send event！" + LocalDateTime.now() + "\n\n");
             writer.flush();
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-
-            }
+            ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
         }
         writer.close();
     }
@@ -72,22 +73,23 @@ public class QuickStartController {
      */
     @RequestMapping("/quick_start_easy")
     public SseEmitter quickStartEasy() {
-        LOGGER.info("request quick start easy demo......");
+
+        LOGGER.debug("request quick start easy demo......");
+
         final SseEmitter sseEmitter = new SseEmitter();
 
-        ExecutorService service = Executors.newSingleThreadExecutor();
+        ExecutorService worker = Executors.newSingleThreadExecutor();
 
-        service.execute(() -> {
+        worker.execute(() -> {
             try {
 
                 for (int i = 1; i < 6; i++) {
                     sseEmitter.send(i + ", hello for server send event!" + LocalDateTime.now(), MediaType.TEXT_PLAIN);
-                    Thread.sleep(2000);
+                    ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
                 }
-
                 sseEmitter.complete();
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 sseEmitter.completeWithError(e);
             }
         });
