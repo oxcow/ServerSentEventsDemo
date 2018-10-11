@@ -82,6 +82,10 @@ _filed_可以是`id`,`event`,`retry`和`data`.
 
 消息标识。服务器将该值传给浏览器后，浏览器可使用`lastEventId`属性获取，并会在下次链接时将该值存放在HTTP头的`Last-Event-ID`中，发送到服务器。
 
+#### data 属性
+
+消息内容。可以有多个，每个data一行。
+
 #### event 属性
 
 事件类型。浏览器端通过`addEventListener`进行监听。
@@ -90,3 +94,34 @@ _filed_可以是`id`,`event`,`retry`和`data`.
 
 指定浏览器重新发起链接的时间间隔(异常情况下)，单位毫秒。
 
+## Spring SseEmitter
+
+    @RequestMapping("/quick_start_easy")
+    public SseEmitter quickStartEasy() {
+        final SseEmitter sseEmitter = new SseEmitter();
+        ExecutorService worker = Executors.newSingleThreadExecutor();
+        worker.execute(() -> {
+            try {
+                for (int i = 1; i < 6; i++) {
+                    sseEmitter.send(i + ", hello for server send event!" + LocalDateTime.now(), MediaType.TEXT_PLAIN);
+                    ThreadUtils.sleep(SLEEP_TIME_MILLISECONDS);
+                }
+                sseEmitter.complete();
+            } catch (IOException e) {
+                sseEmitter.completeWithError(e);
+            }
+        });
+        return sseEmitter;
+    }
+
+**NOTES:** 使用`SseEmitter`时，当浏览器刷新或者关闭时，服务端会抛出*java.io.IOException: Broken pipe*异常。具体可参看[java.io.IOException: Broken pipe #714](https://github.com/codecentric/spring-boot-admin/issues/714)
+
+## 参考
+
+https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+
+http://html5doctor.com/server-sent-events/
+
+http://www.ruanyifeng.com/blog/2017/05/server-sent_events.html
+
+https://www.logicbig.com/tutorials/spring-framework/spring-web-mvc/sse-emitter.html

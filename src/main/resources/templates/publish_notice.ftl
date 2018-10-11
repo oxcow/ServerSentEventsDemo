@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <script type="text/javascript" src="/base.js"></script>
     <script src='http://libs.baidu.com/jquery/2.1.1/jquery.min.js'></script>
-    <title>Administrator Publish Message</title>
+    <title>Administrator Publish Notice</title>
     <script type="text/javascript">
         $(function () {
             $('#pmessage').click(function () {
