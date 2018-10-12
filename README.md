@@ -73,8 +73,7 @@
 _filed_可以是`id`,`event`,`retry`和`data`.
 
 1. 每个属性一行(使用\n)，其中`data`属性可以有多行
-2. 属性冒号后有且仅有一个空格分割
-3. 特别的，冒号可以单独一行，此时代表注释。
+2. 特别的，冒号可以单独一行，此时代表注释。
 
 一次可以发送多条数据信息，每条数据信息之间用空白行分割(使用\n\n). 属性说明如下：
 
@@ -94,7 +93,7 @@ _filed_可以是`id`,`event`,`retry`和`data`.
 
 指定浏览器重新发起链接的时间间隔(异常情况下)，单位毫秒。
 
-## Spring SseEmitter
+## 使用Spring SseEmitter实现服务端
 
     @RequestMapping("/quick_start_easy")
     public SseEmitter quickStartEasy() {
