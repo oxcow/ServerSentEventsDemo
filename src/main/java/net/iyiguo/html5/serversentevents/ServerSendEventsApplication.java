@@ -1,4 +1,4 @@
-package net.iyiguo.html5.serversendevents;
+package net.iyiguo.html5.serversentevents;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

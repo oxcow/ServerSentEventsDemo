@@ -1,10 +1,10 @@
-package net.iyiguo.html5.serversendevents.web;
+package net.iyiguo.html5.serversentevents.web;
 
-import net.iyiguo.html5.serversendevents.domain.Message;
-import net.iyiguo.html5.serversendevents.service.BroadcastService;
-import net.iyiguo.html5.serversendevents.service.CacheDBService;
-import net.iyiguo.html5.serversendevents.service.MessageService;
-import net.iyiguo.html5.serversendevents.util.ThreadUtils;
+import net.iyiguo.html5.serversentevents.domain.Message;
+import net.iyiguo.html5.serversentevents.service.BroadcastService;
+import net.iyiguo.html5.serversentevents.service.CacheDBService;
+import net.iyiguo.html5.serversentevents.service.MessageService;
+import net.iyiguo.html5.serversentevents.util.ThreadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class MessageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 
-    ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
     @Autowired
     private MessageService messageService;

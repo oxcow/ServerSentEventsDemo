@@ -25,11 +25,11 @@
             }
         }
 
-        evtSource.addEventListener("event_one", function () {
+        evtSource.addEventListener("event_one", function (event) {
             outPrint('output', 'EventOne:' + event.data, 'green');
         });
 
-        evtSource.addEventListener("event_two", function () {
+        evtSource.addEventListener("event_two", function (event) {
             outPrint('output', 'EventTwo:' + event.data, 'red');
         });
 

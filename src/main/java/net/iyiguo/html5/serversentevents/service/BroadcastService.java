@@ -1,7 +1,7 @@
-package net.iyiguo.html5.serversendevents.service;
+package net.iyiguo.html5.serversentevents.service;
 
 import com.google.common.collect.Sets;
-import net.iyiguo.html5.serversendevents.domain.Message;
+import net.iyiguo.html5.serversentevents.domain.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class BroadcastService {
 
     private Set<BroadcastObject> broadcastUsers = Sets.newConcurrentHashSet();
 
-    ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
+    private ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
 
     @Autowired
     private MessageService messageService;
@@ -74,7 +74,7 @@ public class BroadcastService {
      * @param sseEmitter
      * @return
      */
-    public boolean remove(String name, SseEmitter sseEmitter) {
+    private boolean remove(String name, SseEmitter sseEmitter) {
 
         int beforeCount = broadcastUsers.size();
 
@@ -158,13 +158,13 @@ public class BroadcastService {
         private long lastEventId;
         private SseEmitter emitter;
 
-        public BroadcastObject(String name, long lastEventId, SseEmitter emitter) {
+        BroadcastObject(String name, long lastEventId, SseEmitter emitter) {
             this.name = name;
             this.lastEventId = lastEventId;
             this.emitter = emitter;
         }
 
-        public long getLastEventId() {
+        long getLastEventId() {
             return lastEventId;
         }
 

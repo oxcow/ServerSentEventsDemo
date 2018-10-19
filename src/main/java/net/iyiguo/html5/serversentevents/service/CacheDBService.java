@@ -1,8 +1,8 @@
-package net.iyiguo.html5.serversendevents.service;
+package net.iyiguo.html5.serversentevents.service;
 
 import com.google.common.collect.Maps;
-import net.iyiguo.html5.serversendevents.config.CacheProperties;
-import net.iyiguo.html5.serversendevents.domain.SystemUser;
+import net.iyiguo.html5.serversentevents.config.CacheProperties;
+import net.iyiguo.html5.serversentevents.domain.SystemUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Component
 public class CacheDBService {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(CacheDBService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CacheDBService.class);
 
     private Map<Integer, SystemUser> loginInUsers;
 

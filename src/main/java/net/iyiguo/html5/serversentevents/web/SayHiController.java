@@ -1,6 +1,6 @@
-package net.iyiguo.html5.serversendevents.web;
+package net.iyiguo.html5.serversentevents.web;
 
-import net.iyiguo.html5.serversendevents.util.ThreadUtils;
+import net.iyiguo.html5.serversentevents.util.ThreadUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,8 @@ import java.io.PrintWriter;
 @Controller
 @RequestMapping("/html5/sse")
 public class SayHiController {
-    public static final Logger LOGGER = LoggerFactory.getLogger(SayHiController.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SayHiController.class);
 
     @Value("${thread.sleep.milliseconds}")
     private final Long SLEEP_TIME_MILLISECONDS = 2000L;

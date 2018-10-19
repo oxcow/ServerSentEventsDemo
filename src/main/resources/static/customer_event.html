@@ -22,7 +22,11 @@
             alert("不会被触发！");
         }
 
-        evtSource.addEventListener("event_one", function () {
+        // 使用 addEventListener 时，可以不声明回调函数参数。回调内容默认存储在event变量中。
+        // 所以以下代码可以写成
+        // evtSource.addEventListener("event_one",function(){ outPrint("output", 'EventOne:' + event.data, 'green'); });
+
+        evtSource.addEventListener("event_one", function (event) {
             outPrint('output', 'EventOne:' + event.data, 'green');
             if (count++ > 10) {
                 outPrint('output', "超过指定次数，主动关闭");

@@ -1,4 +1,4 @@
-package net.iyiguo.html5.serversendevents.util;
+package net.iyiguo.html5.serversentevents.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

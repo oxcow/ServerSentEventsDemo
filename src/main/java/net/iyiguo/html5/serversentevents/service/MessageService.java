@@ -1,9 +1,9 @@
-package net.iyiguo.html5.serversendevents.service;
+package net.iyiguo.html5.serversentevents.service;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.iyiguo.html5.serversendevents.domain.Message;
-import net.iyiguo.html5.serversendevents.enums.MessageTypeEnum;
+import net.iyiguo.html5.serversentevents.domain.Message;
+import net.iyiguo.html5.serversentevents.enums.MessageTypeEnum;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class MessageService {
         if (messageMap.containsKey(id)) return messageMap.get(id);
 
         Optional<Long> ceilingKey = messageMap.keySet().stream()
-                .filter((Long obj) -> obj.longValue() > id.longValue())
+                .filter(obj -> obj > id)
                 .sorted()
                 .findFirst();
 

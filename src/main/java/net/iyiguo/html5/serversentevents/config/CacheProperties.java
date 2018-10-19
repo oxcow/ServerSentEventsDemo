@@ -1,7 +1,7 @@
-package net.iyiguo.html5.serversendevents.config;
+package net.iyiguo.html5.serversentevents.config;
 
 import com.google.common.collect.Lists;
-import net.iyiguo.html5.serversendevents.domain.SystemUser;
+import net.iyiguo.html5.serversentevents.domain.SystemUser;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

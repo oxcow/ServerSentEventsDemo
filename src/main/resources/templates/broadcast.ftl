@@ -26,11 +26,12 @@
                 outPrint('output', "connected...");
             }
 
-            evtSource.addEventListener("broadcast", function () {
+            evtSource.addEventListener("broadcast", function (e) {
+                console.log(e == event);
                 outPrint('output', event.data, 'green');
             });
 
-            evtSource.addEventListener("admin_notice", function () {
+            evtSource.addEventListener("admin_notice", function (event) {
                 outPrint('output', event.data, 'blue');
             });
 

@@ -1,4 +1,4 @@
-package net.iyiguo.html5.serversendevents;
+package net.iyiguo.html5.serversentevents;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

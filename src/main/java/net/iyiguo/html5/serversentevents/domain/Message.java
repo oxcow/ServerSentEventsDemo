@@ -1,6 +1,6 @@
-package net.iyiguo.html5.serversendevents.domain;
+package net.iyiguo.html5.serversentevents.domain;
 
-import net.iyiguo.html5.serversendevents.enums.MessageTypeEnum;
+import net.iyiguo.html5.serversentevents.enums.MessageTypeEnum;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,6 @@
-package net.iyiguo.html5.serversendevents.domain;
+package net.iyiguo.html5.serversentevents.domain;
 
-import net.iyiguo.html5.serversendevents.enums.RoleEnum;
+import net.iyiguo.html5.serversentevents.enums.RoleEnum;
 
 public class SystemUser {
     private Integer id;
