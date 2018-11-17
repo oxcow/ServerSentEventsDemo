@@ -2,7 +2,7 @@ spring:
     freemarker:
         cache: false
 
-logging.level.net.iyiguo.html5.serversendevents: DEBUG
+logging.level.net.iyiguo.html5.serversentevents: DEBUG
 
 
 thread.sleep.milliseconds: 5000
