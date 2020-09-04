@@ -5,6 +5,7 @@ import net.iyiguo.html5.serversentevents.service.BroadcastService;
 import net.iyiguo.html5.serversentevents.service.CacheDBService;
 import net.iyiguo.html5.serversentevents.service.MessageService;
 import net.iyiguo.html5.serversentevents.util.ThreadUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.PostConstruct;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -73,7 +75,9 @@ public class MessageController {
     //@RequestMapping("/broadcast/{name}")
     public String broadcast1(@PathVariable String name, @RequestHeader(value = "Last-Event-ID", required = false) Long lastEventId) {
 
-        if (lastEventId == null) lastEventId = -1L;
+        if (lastEventId == null) {
+            lastEventId = -1L;
+        }
 
         Long nextEventId = lastEventId + 1;
 
@@ -83,7 +87,9 @@ public class MessageController {
 
         if (message == null) {
             LOGGER.warn("「{}」, no broadcast message for you!", name);
-            return ": No auto produce broadcast message need to be sent."; // comment message
+
+            // comment message
+            return ": No auto produce broadcast message need to be sent.";
         }
 
         LOGGER.debug("「{}」get broadcast message. next event id is: {}, message: {}", name, nextEventId, message.toString());
@@ -91,6 +97,7 @@ public class MessageController {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id: ").append(message.getId()).append("\n");
         stringBuilder.append("event: ").append(message.getType().name().toLowerCase()).append("\n");
+
         // 设置客户端链接超时或异常后重新发起链接的间隔时间
         stringBuilder.append("retry: ").append(6000).append("\n");
 

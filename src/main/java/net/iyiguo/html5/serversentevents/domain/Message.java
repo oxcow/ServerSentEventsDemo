@@ -7,9 +7,16 @@ import java.time.LocalDateTime;
 public class Message {
 
     private Long id;
+
     private String context;
+
     private LocalDateTime createTime;
-    private Long ttl; // second
+
+    /**
+     * second
+     */
+    private Long ttl;
+
     private MessageTypeEnum type;
 
     public Message() {

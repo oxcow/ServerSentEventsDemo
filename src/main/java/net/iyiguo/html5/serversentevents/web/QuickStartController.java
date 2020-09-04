@@ -1,6 +1,7 @@
 package net.iyiguo.html5.serversentevents.web;
 
 import net.iyiguo.html5.serversentevents.util.ThreadUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
@@ -23,7 +25,9 @@ public class QuickStartController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuickStartController.class);
 
-    // 如果声明为 final 基本类型，那么传递到其他方法使用时，将得不到覆盖后的值。虽然debug时看到的是覆盖后的值。
+    /**
+     * 如果声明为 final 基本类型，那么传递到其他方法使用时，将得不到覆盖后的值。虽然debug时看到的是覆盖后的值。
+     */
     @Value("${thread.sleep.milliseconds}")
     private final Long SLEEP_TIME_MILLISECONDS = 2000L;
 

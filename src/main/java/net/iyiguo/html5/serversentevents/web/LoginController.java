@@ -1,19 +1,20 @@
 package net.iyiguo.html5.serversentevents.web;
 
-import net.iyiguo.html5.serversentevents.domain.SystemUser;
-import net.iyiguo.html5.serversentevents.enums.RoleEnum;
-import net.iyiguo.html5.serversentevents.service.CacheDBService;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
+import net.iyiguo.html5.serversentevents.domain.SystemUser;
+import net.iyiguo.html5.serversentevents.enums.RoleEnum;
+import net.iyiguo.html5.serversentevents.service.CacheDBService;
 
 @Controller
 @RequestMapping("/login/")
@@ -21,11 +22,14 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-    @Autowired
-    private CacheDBService cacheDBService;
+    private final CacheDBService cacheDBService;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher publisher;
+
+    public LoginController(CacheDBService cacheDBService, ApplicationEventPublisher publisher) {
+        this.cacheDBService = cacheDBService;
+        this.publisher = publisher;
+    }
 
     @RequestMapping("/index")
     public String login() {

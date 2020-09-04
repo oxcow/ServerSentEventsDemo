@@ -1,16 +1,17 @@
 package net.iyiguo.html5.serversentevents.service;
 
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import com.google.common.collect.Maps;
 import net.iyiguo.html5.serversentevents.config.CacheProperties;
 import net.iyiguo.html5.serversentevents.domain.SystemUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class CacheDBService {
@@ -19,8 +20,11 @@ public class CacheDBService {
 
     private Map<Integer, SystemUser> loginInUsers;
 
-    @Autowired
-    private CacheProperties cacheProperties;
+    private final CacheProperties cacheProperties;
+
+    public CacheDBService(CacheProperties cacheProperties) {
+        this.cacheProperties = cacheProperties;
+    }
 
     @PostConstruct
     public void init() {
@@ -28,7 +32,9 @@ public class CacheDBService {
     }
 
     public Optional<SystemUser> getByNameAndPass(String name, String pass) {
-        if (cacheProperties.getSystemUsers().isEmpty()) return Optional.empty();
+        if (cacheProperties.getSystemUsers().isEmpty()) {
+            return Optional.empty();
+        }
         return cacheProperties.getSystemUsers().stream()
                 .filter(u -> u.getName().equals(name))
                 .findFirst();

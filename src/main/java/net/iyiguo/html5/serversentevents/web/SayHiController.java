@@ -1,6 +1,11 @@
 package net.iyiguo.html5.serversentevents.web;
 
-import net.iyiguo.html5.serversentevents.util.ThreadUtils;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,10 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import net.iyiguo.html5.serversentevents.util.ThreadUtils;
 
 @Controller
 @RequestMapping("/html5/sse")
@@ -31,7 +33,7 @@ public class SayHiController {
         res.setContentType("text/event-stream");
         res.setCharacterEncoding("UTF-8");
 
-        int retry = RandomUtils.nextInt(6000, 12000);
+        int retry = RandomUtils.nextInt(15000, 18000);
 
         PrintWriter writer = res.getWriter();
         for (int i = 1; i < 6; i++) {

@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.iyiguo.html5.serversentevents.domain.Message;
 import net.iyiguo.html5.serversentevents.enums.MessageTypeEnum;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
@@ -39,7 +40,9 @@ public class MessageService {
 
     public Message getCeilingMessage(Long id) {
 
-        if (messageMap.containsKey(id)) return messageMap.get(id);
+        if (messageMap.containsKey(id)) {
+            return messageMap.get(id);
+        }
 
         Optional<Long> ceilingKey = messageMap.keySet().stream()
                 .filter(obj -> obj > id)

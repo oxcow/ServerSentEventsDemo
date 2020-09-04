@@ -1,22 +1,23 @@
 package net.iyiguo.html5.serversentevents.service;
 
-import com.google.common.collect.Sets;
-import net.iyiguo.html5.serversentevents.domain.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
+import javax.annotation.PreDestroy;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import com.google.common.collect.Sets;
+import net.iyiguo.html5.serversentevents.domain.Message;
 
 @Component
 public class BroadcastService {
@@ -27,8 +28,11 @@ public class BroadcastService {
 
     private ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
+
+    public BroadcastService(MessageService messageService) {
+        this.messageService = messageService;
+    }
 
     @PreDestroy
     public void destroy() {
@@ -117,7 +121,9 @@ public class BroadcastService {
         LOGGER.debug("收到用户【{}】登出系统消息, 订阅人数从 {} 变为 {}", name, beforeCount, broadcastUsers.size());
     }
 
-    // 广播消息
+    /**
+     * 广播消息
+     */
     public void broadcast() {
 
         broadcastUsers.forEach(subscriber -> {
@@ -142,6 +148,7 @@ public class BroadcastService {
                     } catch (IOException e) {
                         LOGGER.error("系统推送消息异常: {}->【{}】.{}", message.getId(), subscriber.name, e.getMessage(), e);
                         emitter.completeWithError(e);
+
                         // 移除当前订阅人信息
                         // 不考虑并发情况。移除时另一个线程进来做send操作时会发生异常，但不影响业务逻辑。
                         remove(subscriber.name, emitter);
