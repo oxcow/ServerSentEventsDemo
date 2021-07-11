@@ -1,6 +1,6 @@
 spring:
-    freemarker:
-        cache: false
+  freemarker:
+    cache: false
 
 logging.level.net.iyiguo.html5.serversentevents: DEBUG
 
@@ -8,20 +8,43 @@ logging.level.net.iyiguo.html5.serversentevents: DEBUG
 thread.sleep.milliseconds: 2500
 
 cache:
-    system_users:
-    -   id: 1
-        name: admin
-        pass: null
-        role: ADMINISTRATOR
-    -   id: 2
-        name: jack
-        pass: null
-        role: GUEST
-    -   id: 3
-        name: joe
-        pass: null
-        role: GUEST
-    -   id: 4
-        name: grace
-        pass: null
-        role: GUEST
+  system_users:
+    - id: 1
+      name: admin
+      pass: null
+      role: ADMINISTRATOR
+    - id: 2
+      name: jack
+      pass: null
+      role: GUEST
+    - id: 3
+      name: joe
+      pass: null
+      role: GUEST
+    - id: 4
+      name: grace
+      pass: null
+      role: GUEST
+
+poker-cache:
+  rooms:
+    - id: 1
+      name: test room
+      pass: null
+      type: TEST
+      pokers:
+        - id: 1
+          name: room master
+          role: MASTER
+        - id: 2
+          name: guest 1
+          role: GUEST
+        - id: 3
+          name: guest 2
+          role: GUEST
+        - id: 4
+          name: poker jack
+          role: POKER
+        - id: 5
+          name: poker john
+          role: POKER
