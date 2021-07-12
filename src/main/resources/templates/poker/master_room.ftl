@@ -42,17 +42,24 @@
           }
 
           evtSource.addEventListener("FLOP", function (e) {
-            console.log(e == event);
+            const messages = JSON.parse(e.data);
+            messages.map((msg,idx) => {
+              $("#poker_"+msg.pokerId).html(msg.votes);
+            });
             outPrint('output', event.data, 'green');
           });
 
           evtSource.addEventListener("SHUFFLE", function (e) {
-            console.log(e == event);
+            $(".poker_vote").text('');
             outPrint('output', event.data, 'red');
             //$("#voteInput").val('');
           });
 
           evtSource.addEventListener("VOTE", function (event) {
+            const messages = JSON.parse(event.data);
+            messages.map((msg, idx) => {
+              $("#poker_"+msg.pokerId).html(msg.voteStatus);
+            });
             outPrint('output', event.data, 'blue');
           });
 
@@ -89,7 +96,9 @@
             <td>${poker.id}</td>
             <td>${poker.name}</td>
             <td>${poker.role}</td>
-            <td></td>
+            <td>
+                <div id="poker_${poker.id}" class="poker_vote"></div>
+            </td>
         </tr>
     </#list>
     </tbody>

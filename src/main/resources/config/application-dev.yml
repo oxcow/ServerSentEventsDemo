@@ -1,6 +1,7 @@
 spring:
   freemarker:
     cache: false
+    suffix: .ftl
 
 logging.level.net.iyiguo.html5.serversentevents: DEBUG
 

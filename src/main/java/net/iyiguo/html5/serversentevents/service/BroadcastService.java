@@ -1,6 +1,7 @@
 package net.iyiguo.html5.serversentevents.service;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +20,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import com.google.common.collect.Sets;
 import net.iyiguo.html5.serversentevents.domain.Message;
 
+/**
+ * @author leeyee
+ */
 @Component
 public class BroadcastService {
 
@@ -26,7 +30,7 @@ public class BroadcastService {
 
     private Set<BroadcastObject> broadcastUsers = Sets.newConcurrentHashSet();
 
-    private ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
+    private final ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
 
     private final MessageService messageService;
 
@@ -143,7 +147,7 @@ public class BroadcastService {
                         emitter.send(SseEmitter.event()
                                 .id(message.getId().toString())
                                 .name(message.getType().name().toLowerCase())
-                                .data(message, MediaType.APPLICATION_JSON_UTF8));
+                                .data(message, MediaType.APPLICATION_JSON));
 
                     } catch (IOException e) {
                         LOGGER.error("系统推送消息异常: {}->【{}】.{}", message.getId(), subscriber.name, e.getMessage(), e);
@@ -182,6 +186,23 @@ public class BroadcastService {
                     ", lastEventId=" + lastEventId +
                     ", emitter=" + emitter +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            BroadcastObject that = (BroadcastObject) o;
+            return lastEventId == that.lastEventId && Objects.equals(name, that.name) && Objects.equals(emitter, that.emitter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, lastEventId, emitter);
         }
     }
 }

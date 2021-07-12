@@ -94,7 +94,7 @@ public class RoomBroadcastService {
                             emitter.send(SseEmitter.event()
                                     .id(pokerMessage.getId().toString())
                                     .name(pokerMessage.getAction().name())
-                                    .data(pokerMessage.getMessage(), MediaType.APPLICATION_JSON_UTF8));
+                                    .data(pokerMessage.getMessage(), MediaType.APPLICATION_JSON));
                             LOGGER.debug("[{}] 发送消息 {} 到 Poker#{}(Room#{})",
                                     pokerMessage.getAction(), pokerMessage.getMessage(), obj.pokerId, obj.roomId);
                         } catch (IOException e) {

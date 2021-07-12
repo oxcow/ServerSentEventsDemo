@@ -1,32 +1,40 @@
 package net.iyiguo.html5.serversentevents.dto;
 
-import net.iyiguo.html5.serversentevents.domain.Poker;
 import net.iyiguo.html5.serversentevents.enums.PokerVoteStatusEnum;
 
+/**
+ * Poker Vote Info
+ */
 public class PokerVotesDto {
-    private Poker poker;
+    private Long pokerId;
     private Integer votes;
     private PokerVoteStatusEnum voteStatus = PokerVoteStatusEnum.UN_VOTED;
 
     public PokerVotesDto() {
     }
 
-    public PokerVotesDto(Poker poker, Integer votes) {
-        this.poker = poker;
+    public PokerVotesDto(Long pokerId, Integer votes) {
+        this.pokerId = pokerId;
         this.votes = votes;
     }
 
-    public PokerVotesDto(Poker poker, PokerVoteStatusEnum voteStatus) {
-        this.poker = poker;
+    public PokerVotesDto(Long pokerId, PokerVoteStatusEnum voteStatus) {
+        this.pokerId = pokerId;
         this.voteStatus = voteStatus;
     }
 
-    public Poker getPoker() {
-        return poker;
+    public PokerVotesDto(Long pokerId, Integer votes, PokerVoteStatusEnum voteStatus) {
+        this.pokerId = pokerId;
+        this.votes = votes;
+        this.voteStatus = voteStatus;
     }
 
-    public void setPoker(Poker poker) {
-        this.poker = poker;
+    public Long getPokerId() {
+        return pokerId;
+    }
+
+    public void setPokerId(Long pokerId) {
+        this.pokerId = pokerId;
     }
 
     public Integer getVotes() {
@@ -35,5 +43,13 @@ public class PokerVotesDto {
 
     public void setVotes(Integer votes) {
         this.votes = votes;
+    }
+
+    public PokerVoteStatusEnum getVoteStatus() {
+        return voteStatus;
+    }
+
+    public void setVoteStatus(PokerVoteStatusEnum voteStatus) {
+        this.voteStatus = voteStatus;
     }
 }

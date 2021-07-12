@@ -19,17 +19,24 @@
           }
 
           evtSource.addEventListener("FLOP", function (e) {
-            console.log(e == event);
+            const messages = JSON.parse(e.data);
+            messages.map((msg, idx) => {
+              $("#poker_" + msg.pokerId).html(msg.votes);
+            });
             outPrint('output', event.data, 'green');
           });
 
           evtSource.addEventListener("SHUFFLE", function (e) {
-            console.log(e == event);
+            $(".poker_vote").text('');
             outPrint('output', event.data, 'red');
-            //$("#voteInput").val('');
+            $("#voteInput").val('');
           });
 
           evtSource.addEventListener("VOTE", function (event) {
+            const messages = JSON.parse(event.data);
+            messages.map((msg, idx) => {
+              $("#poker_" + msg.pokerId).html(msg.voteStatus);
+            });
             outPrint('output', event.data, 'blue');
           });
 
@@ -39,6 +46,10 @@
 
         $("#votes").click(() => {
           let vote = $("#voteInput").val();
+          if(!vote){
+            alert("please vote");
+            return;
+          }
           console.log(poker_id, "votes:", vote);
           $.post("/poker/vote",
             {roomId: '${room.id}', pokerId: '${user.id}', vote: vote},
@@ -70,8 +81,19 @@
             <td>${poker.role}</td>
             <td>
                 <#if poker.id == user.id>
-                    <input type="range" min="1" max="13" id="voteInput">
+                    <select id="voteInput">
+                        <option value="">Vote</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="8">8</option>
+                        <option value="13">13</option>
+                        <option value="21">21</option>
+                    </select>
                     <button id="votes">投票</button>
+                <#else>
+                <div id="poker_${poker.id}" class="poker_vote"></div>
                 </#if>
             </td>
         </tr>
