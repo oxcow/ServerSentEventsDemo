@@ -7,6 +7,8 @@
 <body>
 <h1>Room List</h1>
 
+<a href="/demo/rooms/create">Add a new Room</a>
+
 <table border="1">
     <thead>
     <tr>
@@ -21,7 +23,7 @@
         <tr>
             <td>${room.id}</td>
             <td>
-                <a href="/poker/room/${room.id}" target="_blank">${room.name}</a>
+                <a href="/demo/rooms/${room.id}" target="_blank">${room.name}</a>
             </td>
             <td>${room.type}</td>
             <td>
