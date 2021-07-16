@@ -23,7 +23,7 @@ const flopEvent = (roomId, pokerId) => {
 const shuffleEvent = (roomId, pokerId) => {
     console.log("洗牌");
     $.ajax({
-        url: "/poker/send",
+        url: "/demo/pokers/cmd",
         type: 'post',
         contentType: "application/json;charset=utf-8",
         data: JSON.stringify({action: ACTIONS.SHUFFLE, roomId: roomId, pokerId: pokerId}),
@@ -42,6 +42,11 @@ const afterFlop = (pokerId, vote) => {
     const className = ".poker_" + pokerId;
     $(className).find(".card").addClass('bg-success');
     $(className).find(".card-body").html(vote);
+}
+const afterShuffle = () => {
+    $(".card").removeClass('bg-primary');
+    $(".card").removeClass('bg-success');
+    $(".card-body").html('<span class="ec ec-zzz"></span>');
 }
 
 const voteEvent = (roomId, pokerId, vote) => {
@@ -68,6 +73,7 @@ const flopListener = (e) => {
 
 const shuffleListener = (e) => {
     console.log("shuffle listener...", e.data);
+    afterShuffle();
 }
 
 const voteListener = (e) => {

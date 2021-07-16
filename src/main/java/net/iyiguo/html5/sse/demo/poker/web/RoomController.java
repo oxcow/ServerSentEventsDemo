@@ -37,7 +37,7 @@ public class RoomController {
         Optional<Room> roomOptional = pokerCacheDBService.getRoomById(roomNo);
         if (roomOptional.isPresent()) {
             model.addAttribute("room", roomOptional.get());
-            return "room_detail";
+            return "poker/room_detail";
         }
         throw new RuntimeException("Can not found room #" + roomNo);
     }

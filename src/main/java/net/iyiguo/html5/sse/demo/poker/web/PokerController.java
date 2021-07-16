@@ -43,7 +43,7 @@ public class PokerController {
         pokerCacheDBService.enterRoom(roomId, pokerId);
         model.addAttribute("room", roomOptional.get());
         model.addAttribute("user", pokerOptional.get());
-        return "room";
+        return "poker/room";
     }
 
     @PostMapping("/cmd")
