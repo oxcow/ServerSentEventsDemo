@@ -3,9 +3,19 @@ package net.iyiguo.html5.sse.demo.poker.model;
 import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 
 public class PokerEvent {
+
     private PokerActionEnum action;
     private Long roomId;
     private Long pokerId;
+
+    public PokerEvent() {
+    }
+
+    public PokerEvent(Long pokerId, Long roomId, PokerActionEnum action) {
+        this.action = action;
+        this.roomId = roomId;
+        this.pokerId = pokerId;
+    }
 
     public PokerActionEnum getAction() {
         return action;

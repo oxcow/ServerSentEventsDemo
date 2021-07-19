@@ -1,6 +1,6 @@
 package net.iyiguo.html5.sse.demo.poker.web.dto;
 
-import net.iyiguo.html5.sse.enums.RoomTypeEnum;
+import net.iyiguo.html5.sse.demo.poker.enums.RoomTypeEnum;
 
 /**
  * @author leeyee

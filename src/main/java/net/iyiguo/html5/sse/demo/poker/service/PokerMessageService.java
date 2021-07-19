@@ -1,16 +1,11 @@
 package net.iyiguo.html5.sse.demo.poker.service;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Table;
+import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 import net.iyiguo.html5.sse.demo.poker.model.PokerEvent;
 import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
-import net.iyiguo.html5.sse.demo.poker.model.PokerVotes;
-import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
-import net.iyiguo.html5.sse.demo.poker.enums.PokerVoteStatusEnum;
-import net.iyiguo.html5.sse.web.MessageController;
-
+import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVotesVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +15,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class PokerMessageService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
-
-    private Table<Long, Long, Integer> pokerVoteTable = HashBasedTable.create();
+    private static final Logger LOGGER = LoggerFactory.getLogger(PokerMessageService.class);
 
     private AtomicLong atomicLong = new AtomicLong(1);
 
@@ -39,7 +31,7 @@ public class PokerMessageService {
     private RoomBroadcastService roomBroadcastService;
 
     @Autowired
-    private PokerCacheDBService pokerCacheDBService;
+    private PokerVoteService pokerVoteService;
 
     public SseEmitter subscribeRoom(@PathVariable Long pokerId,
                                     @PathVariable Long roomId,
@@ -59,40 +51,33 @@ public class PokerMessageService {
     }
 
     public void handlePokerEvent(PokerEvent pokerEvent) {
-        if (pokerEvent.getAction().equals(PokerActionEnum.FLOP)) {
-            List<PokerVotes> pokerVotesDtoList = getPokerVotesInfoByRoomId(pokerEvent.getRoomId());
-            if (!pokerVotesDtoList.isEmpty()) {
-                String text = writeValueAsString(pokerVotesDtoList);
-                PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.FLOP, text);
+        switch (pokerEvent.getAction()) {
+            case FLOP:
+                List<PokerVotesVo> pokerVotesDtoList = pokerVoteService.findAllVotes(pokerEvent.getRoomId());
+                if (!pokerVotesDtoList.isEmpty()) {
+                    String text = writeValueAsString(pokerVotesDtoList);
+                    PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.FLOP, text);
+                    roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                }
+                break;
+            case SHUFFLE:
+                pokerVoteService.cleanAllVote(pokerEvent.getRoomId());
+                PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.SHUFFLE, "shuffle");
                 roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
-            }
-        } else if (pokerEvent.getAction().equals(PokerActionEnum.SHUFFLE)) {
-            pokerVoteTable.clear();
-            PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.SHUFFLE, "shuffle");
-            roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                break;
+            case VOTE:
+            case ONLINE:
+                String text = writeValueAsString(pokerEvent);
+                message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), text);
+                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                break;
+
+            default:
+                LOGGER.info("Do Nothing!!");
         }
 
     }
 
-    public void vote(Long roomId, Long pokerId, Integer votes) {
-        pokerVoteTable.put(roomId, pokerId, votes);
-
-        List<PokerVotes> pokerVotesDto = getPokerVotesInfoByRoomId(roomId);
-        if (!pokerVotesDto.isEmpty()) {
-            String text = writeValueAsString(pokerVotesDto);
-            PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.VOTE, text);
-            roomBroadcastService.broadcast(roomId, message);
-        }
-    }
-
-    private List<PokerVotes> getPokerVotesInfoByRoomId(Long roomId) {
-        Map<Long, Integer> pokerVote = pokerVoteTable.row(roomId);
-        List<PokerVotes> pokerVotesDtoList = Lists.newArrayList();
-        for (Map.Entry<Long, Integer> pv : pokerVote.entrySet()) {
-            pokerVotesDtoList.add(new PokerVotes(pv.getKey(), pv.getValue(), PokerVoteStatusEnum.VOTED));
-        }
-        return pokerVotesDtoList;
-    }
 
     private String writeValueAsString(Object object) {
         try {

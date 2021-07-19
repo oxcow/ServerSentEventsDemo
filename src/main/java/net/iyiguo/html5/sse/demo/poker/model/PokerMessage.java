@@ -2,17 +2,15 @@ package net.iyiguo.html5.sse.demo.poker.model;
 
 import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 
+/**
+ * @author leeyee
+ */
 public class PokerMessage {
     private Long id;
     private PokerActionEnum action;
     private String message;
 
     public PokerMessage() {
-    }
-
-    public PokerMessage(Long id, PokerActionEnum action) {
-        this.id = id;
-        this.action = action;
     }
 
     public PokerMessage(Long id, PokerActionEnum action, String message) {

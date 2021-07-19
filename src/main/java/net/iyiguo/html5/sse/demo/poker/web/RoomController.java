@@ -1,8 +1,9 @@
 package net.iyiguo.html5.sse.demo.poker.web;
 
-import net.iyiguo.html5.sse.demo.poker.entity.Room;
-import net.iyiguo.html5.sse.demo.poker.service.PokerCacheDBService;
+import net.iyiguo.html5.sse.demo.poker.service.PokerService;
+import net.iyiguo.html5.sse.demo.poker.service.RoomService;
 import net.iyiguo.html5.sse.demo.poker.web.dto.RoomDto;
+import net.iyiguo.html5.sse.demo.poker.web.dto.RoomVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,23 +21,27 @@ import java.util.Optional;
 @RequestMapping("/demo/rooms")
 public class RoomController {
 
-    private PokerCacheDBService pokerCacheDBService;
+    private RoomService roomService;
+    private PokerService pokerService;
 
-    public RoomController(PokerCacheDBService pokerCacheDBService) {
-        this.pokerCacheDBService = pokerCacheDBService;
+    public RoomController(RoomService roomService, PokerService pokerService) {
+        this.roomService = roomService;
+        this.pokerService = pokerService;
     }
 
     @GetMapping
     public String rooms(Model model) {
-        model.addAttribute("rooms", pokerCacheDBService.allRooms());
+        model.addAttribute("rooms", roomService.findAllRooms());
+        model.addAttribute("pokers", pokerService.findAllPokers());
         return "poker/room_list";
     }
 
     @GetMapping("/{roomId}")
     public String room(@PathVariable("roomId") Long roomNo, Model model) {
-        Optional<Room> roomOptional = pokerCacheDBService.getRoomById(roomNo);
+        Optional<RoomVo> roomOptional = roomService.getRoomByNo(roomNo);
         if (roomOptional.isPresent()) {
             model.addAttribute("room", roomOptional.get());
+            model.addAttribute("pokers", pokerService.findAllPokers());
             return "poker/room_detail";
         }
         throw new RuntimeException("Can not found room #" + roomNo);
@@ -49,7 +54,7 @@ public class RoomController {
 
     @PostMapping("/create")
     public String saveCreate(RoomDto room) {
-        // TODO: create room
+        roomService.saveRoom(room);
         return "redirect:/demo/rooms";
     }
 

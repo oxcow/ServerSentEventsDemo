@@ -29,23 +29,20 @@ cache:
 
 poker-cache:
   rooms:
-    - id: 1
-      name: test room
+    - name: Room One
       pass: null
       type: TEST
-      pokers:
-        - id: 1
-          name: room master
-          role: MASTER
-        - id: 2
-          name: guest 1
-          role: GUEST
-        - id: 3
-          name: guest 2
-          role: GUEST
-        - id: 4
-          name: poker jack
-          role: POKER
-        - id: 5
-          name: poker john
-          role: POKER
+    - name: Room Two
+      pass: null
+      type: TEST
+  pokers:
+    - name: Master
+      role: MASTER
+    - name: Guest One
+      role: GUEST
+    - name: Guest Two
+      role: GUEST
+    - name: Jack
+      role: POKER
+    - name: Join
+      role: POKER

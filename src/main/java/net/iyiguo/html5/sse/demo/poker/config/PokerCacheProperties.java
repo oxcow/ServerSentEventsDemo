@@ -1,6 +1,7 @@
 package net.iyiguo.html5.sse.demo.poker.config;
 
 import com.google.common.collect.Lists;
+import net.iyiguo.html5.sse.demo.poker.entity.Poker;
 import net.iyiguo.html5.sse.demo.poker.entity.Room;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,13 @@ public class PokerCacheProperties {
 
     private List<Room> rooms = Lists.newArrayList();
 
+    private List<Poker> pokers = Lists.newArrayList();
+
     public List<Room> getRooms() {
         return rooms;
+    }
+
+    public List<Poker> getPokers() {
+        return pokers;
     }
 }

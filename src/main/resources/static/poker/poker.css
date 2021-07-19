@@ -1,0 +1,12 @@
+.card {
+    box-shadow: 0 0.25rem 1rem rgb(48 188 66 / 30%);
+    border-radius: 8px;
+}
+
+.ec_f_lg {
+    font-size: 34px;
+}
+
+.ec_f_md {
+    font-size: 24px;
+}

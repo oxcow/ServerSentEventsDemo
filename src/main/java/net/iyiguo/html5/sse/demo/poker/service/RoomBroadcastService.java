@@ -23,8 +23,6 @@ public class RoomBroadcastService {
 
     private Set<PokerEmitter> broadcastUsers = Sets.newConcurrentHashSet();
 
-    private ExecutorService broadcastWorker = Executors.newFixedThreadPool(3);
-
     @PreDestroy
     public void destroy() {
         if (!broadcastUsers.isEmpty()) {

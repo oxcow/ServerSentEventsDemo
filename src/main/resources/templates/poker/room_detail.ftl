@@ -18,13 +18,13 @@
     </tr>
     </thead>
     <tbody>
-    <#list room.pokers as poker>
+    <#list pokers as poker>
         <tr>
             <td>${poker.id}</td>
             <td>${poker.name}</td>
             <td>${poker.role}</td>
             <td>
-                <a href="/demo/pokers/${poker.id}/enterRoom/${room.id}" target="_blank">进入房间</a>
+                <a href="/demo/pokers/${poker.id}/enterRoom/${room.roomNo}" target="_blank">进入房间</a>
             </td>
         </tr>
     </#list>

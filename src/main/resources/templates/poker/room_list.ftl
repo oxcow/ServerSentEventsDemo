@@ -21,13 +21,13 @@
     <tbody>
     <#list rooms as room>
         <tr>
-            <td>${room.id}</td>
+            <td>${room.roomNo}</td>
             <td>
-                <a href="/demo/rooms/${room.id}" target="_blank">${room.name}</a>
+                <a href="/demo/rooms/${room.roomNo}" target="_blank">${room.name}</a>
             </td>
             <td>${room.type}</td>
             <td>
-                <#list room.pokers as poker>
+                <#list pokers as poker>
                     <div>${poker.id} - ${poker.name} - ${poker.role}</div>
                 </#list>
             </td>

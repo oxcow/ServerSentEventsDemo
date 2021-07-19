@@ -4,6 +4,7 @@ const ACTIONS = {
     FLOP: "FLOP",
     SHUFFLE: "SHUFFLE",
     VOTE: "VOTE",
+    ONLINE: "ONLINE",
 }
 
 const flopEvent = (roomId, pokerId) => {
@@ -55,7 +56,7 @@ const voteEvent = (roomId, pokerId, vote) => {
         {roomId: roomId, pokerId: pokerId, vote: vote},
         function (result) {
             console.log(pokerId, "vote ", vote, " response: ", result);
-            afterVoted(pokerId, vote);
+            //afterVoted(pokerId, vote);
         }
     )
 }
@@ -78,12 +79,15 @@ const shuffleListener = (e) => {
 
 const voteListener = (e) => {
     console.log("vote listener...", e.data);
-    const messages = JSON.parse(e.data);
-    messages.map((msg, idx) => {
-        const className = ".poker_" + msg.pokerId;
-        $(className).find(".card-body").html('<span class="ec ec-100"></span>');
-    });
+    const message = JSON.parse(e.data);
+    const className = ".poker_" + message.pokerId;
+    $(className).find(".card-body").html('<span class="ec ec-100"></span>');
+}
 
+const onlineListener = (e) => {
+    console.log("online listener...", e.data);
+    const message = JSON.parse(e.data);
+    console.log(e.data, " online !!!");
 }
 const eventSource = (url) => {
     if (typeof (EventSource) !== "undefined") {
@@ -94,6 +98,7 @@ const eventSource = (url) => {
         evtSource.addEventListener(ACTIONS.FLOP, flopListener);
         evtSource.addEventListener(ACTIONS.SHUFFLE, shuffleListener);
         evtSource.addEventListener(ACTIONS.VOTE, voteListener);
+        evtSource.addEventListener(ACTIONS.ONLINE, onlineListener);
 
     } else {
         console.error("Sorry! No server-sent events support.");

@@ -1,29 +1,31 @@
-package net.iyiguo.html5.sse.demo.poker.entity;
+package net.iyiguo.html5.sse.demo.poker.web.dto;
 
 import net.iyiguo.html5.sse.demo.poker.enums.RoomTypeEnum;
 
-public class Room {
-
-    private Long id;
+/**
+ * @author leeyee
+ * @date 2021/7/19
+ */
+public class RoomVo {
+    private Long roomNo;
     private String name;
-    private transient String pass;
     private RoomTypeEnum type;
 
-    public Room() {
+    public RoomVo() {
     }
 
-    public Room(Long id, String name, RoomTypeEnum type) {
-        this.id = id;
+    public RoomVo(Long roomNo, String name, RoomTypeEnum type) {
+        this.roomNo = roomNo;
         this.name = name;
         this.type = type;
     }
 
-    public Long getId() {
-        return id;
+    public Long getRoomNo() {
+        return roomNo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRoomNo(Long roomNo) {
+        this.roomNo = roomNo;
     }
 
     public String getName() {
