@@ -16,7 +16,7 @@
             eventSource(url);
         })
     </script>
-    <title>${roomInfo.room.name?capitalize}</title>
+    <title>${roomInfo.room.name?capitalize}'s Room</title>
 </head>
 <body>
 <div class="container">
@@ -71,11 +71,11 @@
             <div class="card-body text-center" style="font-size: 65px;">
                 <span class="ec ec-zzz"></span>
             </div>
-            <div class="card-footer">
-                <button class="btn btn-link float-right">
-                    <span class="ec ec-alarm-clock ec_f_md"></span>
-                </button>
-            </div>
+<#--            <div class="card-footer">-->
+<#--                <button class="btn btn-link float-right">-->
+<#--                    <span class="ec ec-alarm-clock ec_f_md"></span>-->
+<#--                </button>-->
+<#--            </div>-->
         </div>
     </div>
 </#macro>

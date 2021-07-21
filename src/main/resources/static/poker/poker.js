@@ -89,6 +89,7 @@ const onlineListener = (e) => {
     const message = JSON.parse(e.data);
     console.log(e.data, " online !!!");
 }
+
 const eventSource = (url) => {
     if (typeof (EventSource) !== "undefined") {
         const evtSource = new EventSource(url, {withCredentials: true});

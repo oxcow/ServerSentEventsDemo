@@ -17,7 +17,7 @@
             <div class="hero hero-sm p-2">
                 <div class="hero-body">
                     <h1>Simple Poker</h1>
-                    <p>This is a hero example</p>
+                    <p>Create a new Room</p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                         <label class="form-label" for="input-name">Room Name</label>
                     </div>
                     <div class="col-9 col-sm-12 my-2">
-                        <input class="form-input" type="text" id="input-name" name="name" placeholder="Name">
+                        <input class="form-input" type="text" id="input-name" name="name" placeholder="Name" required>
                     </div>
                 </div>
 
@@ -74,7 +74,7 @@
                         <label class="form-label" for="owner_name">Owner Name</label>
                     </div>
                     <div class="col-9 col-sm-12">
-                        <input type="text" class="form-input" id="owner_name" name="ownerName" placeholder="owner"/>
+                        <input type="text" class="form-input" id="owner_name" name="ownerName" placeholder="owner" required/>
                     </div>
                 </div>
 

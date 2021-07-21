@@ -1,13 +1,16 @@
 package net.iyiguo.html5.sse.demo.poker.web;
 
+import net.iyiguo.html5.sse.demo.poker.entity.Poker;
 import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 import net.iyiguo.html5.sse.demo.poker.model.PokerEvent;
 import net.iyiguo.html5.sse.demo.poker.service.PokerMessageService;
+import net.iyiguo.html5.sse.demo.poker.service.PokerService;
 import net.iyiguo.html5.sse.demo.poker.service.PokerVoteService;
 import net.iyiguo.html5.sse.demo.poker.service.RoomPokersService;
 import net.iyiguo.html5.sse.demo.poker.web.dto.RoomPokersVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +32,9 @@ public class PokerController {
 
     private PokerVoteService pokerVoteService;
 
+    @Autowired
+    private PokerService pokerService;
+
     public PokerController(PokerMessageService pokerMessageService, RoomPokersService roomPokersService, PokerVoteService pokerVoteService) {
         this.pokerMessageService = pokerMessageService;
         this.roomPokersService = roomPokersService;
@@ -44,6 +50,13 @@ public class PokerController {
         PokerEvent pokerEvent = new PokerEvent(pokerId, roomId, PokerActionEnum.ONLINE);
         pokerMessageService.handlePokerEvent(pokerEvent);
         return "poker/room";
+    }
+
+    @PostMapping("/enterRoom/{roomNo}")
+    public String enterRoom(@PathVariable("roomNo") Long roomNo,
+                            @RequestParam("name") String name) {
+        Poker poker = pokerService.savePoker(name);
+        return String.format("redirect:/demo/pokers/%d/enterRoom/%d", poker.getId(), roomNo);
     }
 
     @PostMapping("/cmd")
