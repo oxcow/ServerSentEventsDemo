@@ -8,12 +8,12 @@ import net.iyiguo.html5.sse.demo.poker.dao.PokerVoteDao;
 import net.iyiguo.html5.sse.demo.poker.entity.PokerVote;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 /**
  * @author leeyee
@@ -52,11 +52,12 @@ public class PokerVoteMemoryDaoImpl implements PokerVoteDao {
 
     @Override
     public void delByRoomId(Long roomId) {
-        Map<Long, Integer> pokerVoteCols = pokerVotesCache.row(roomId);
+        Map<Long, Integer> pokerVoteCols = Maps.newHashMap(pokerVotesCache.row(roomId));
+        Iterator<Long> pokerIdIter = pokerVoteCols.keySet().iterator();
         if (Objects.nonNull(pokerVoteCols)) {
-            pokerVoteCols.keySet().stream().forEach(pokerId -> {
-                pokerVotesCache.remove(roomId, pokerId);
-            });
+            while (pokerIdIter.hasNext()) {
+                pokerVotesCache.remove(roomId, pokerIdIter.next());
+            }
         }
     }
 
