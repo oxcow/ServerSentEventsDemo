@@ -1,6 +1,12 @@
 .card {
+    width: 130px;
+    height: 180px;
     box-shadow: 0 0.25rem 1rem rgb(48 188 66 / 30%);
     border-radius: 8px;
+}
+
+.card-body {
+    font-size: 65px;
 }
 
 .ec_f_lg {

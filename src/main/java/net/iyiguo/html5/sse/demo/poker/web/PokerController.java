@@ -43,12 +43,15 @@ public class PokerController {
 
     @GetMapping("/{pokerId}/enterRoom/{roomId}")
     public String enterRoom(@PathVariable("pokerId") Long pokerId,
-                            @PathVariable("roomId") Long roomId,
+                            @PathVariable("roomId") Long roomNo,
                             Model model) {
-        RoomPokersVo roomPokersVo = roomPokersService.pokerEnterRoom(pokerId, roomId);
+        boolean hadEnterRoom = roomPokersService.hadEnterRoom(pokerId, roomNo);
+        RoomPokersVo roomPokersVo = roomPokersService.pokerEnterRoom(pokerId, roomNo);
         model.addAttribute("roomInfo", roomPokersVo);
-        PokerEvent pokerEvent = new PokerEvent(pokerId, roomId, PokerActionEnum.ONLINE);
-        pokerMessageService.handlePokerEvent(pokerEvent);
+        if (!hadEnterRoom) {
+            PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.ONLINE);
+            pokerMessageService.handlePokerEvent(pokerEvent);
+        }
         return "poker/room";
     }
 

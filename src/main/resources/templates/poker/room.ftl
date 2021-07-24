@@ -47,7 +47,7 @@
     <#if roomInfo.pokers?size gt 0>
         <div class="columns my-2">
             <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">
-                <div class="columns">
+                <div class="columns" id="pokers">
                     <#list roomInfo.pokers as poker>
                         <@pokerCard poker />
                     </#list>
@@ -68,8 +68,12 @@
                 <div class="card-title">${poker.name?capitalize}</div>
                 <#-- <div class="card-subtitle text-gray">${poker.role}</div>-->
             </div>
-            <div class="card-body text-center" style="font-size: 65px;">
-                <span class="ec ec-zzz"></span>
+            <div class="card-body text-center">
+                <#if poker.votes??>
+                    <span class="ec ec-100"></span>
+                <#else>
+                    <span class="ec ec-zzz"></span>
+                </#if>
             </div>
 <#--            <div class="card-footer">-->
 <#--                <button class="btn btn-link float-right">-->

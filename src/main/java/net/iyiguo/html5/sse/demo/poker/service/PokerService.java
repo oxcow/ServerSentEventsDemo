@@ -1,6 +1,7 @@
 package net.iyiguo.html5.sse.demo.poker.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class PokerService {
 
     public PokerService(PokerDao pokerDao) {
         this.pokerDao = pokerDao;
+    }
+
+    public Optional<Poker> getPokerById(Long pokerId) {
+        return pokerDao.getById(pokerId);
     }
 
     public List<PokerVo> findAllPokers() {

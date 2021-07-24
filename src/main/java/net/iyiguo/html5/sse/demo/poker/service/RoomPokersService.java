@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
@@ -52,6 +52,11 @@ public class RoomPokersService {
 
         pokerCacheProperties.getRooms().forEach(room -> roomDao.save(room));
         pokerCacheProperties.getPokers().forEach(poker -> pokerDao.save(poker));
+    }
+
+    public boolean hadEnterRoom(Long pokerId, Long roomNo) {
+        Set<Poker> pokers = roomPokersCache.get(roomNo);
+        return pokers.stream().anyMatch(poker -> pokerId.equals(poker.getId()));
     }
 
     public RoomPokersVo pokerEnterRoom(Long pokerId, Long roomNo) {

@@ -2,6 +2,7 @@ package net.iyiguo.html5.sse.demo.poker.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.iyiguo.html5.sse.demo.poker.entity.Poker;
 import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 import net.iyiguo.html5.sse.demo.poker.model.PokerEvent;
 import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -32,6 +34,9 @@ public class PokerMessageService {
 
     @Autowired
     private PokerVoteService pokerVoteService;
+
+    @Autowired
+    private PokerService pokerService;
 
     public SseEmitter subscribeRoom(@PathVariable Long pokerId,
                                     @PathVariable Long roomId,
@@ -66,9 +71,14 @@ public class PokerMessageService {
                 roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
                 break;
             case VOTE:
-            case ONLINE:
                 String text = writeValueAsString(pokerEvent);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), text);
+                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                break;
+            case ONLINE:
+                Poker onlinePoker = pokerService.getPokerById(pokerEvent.getPokerId()).orElse(null);
+                String pokerInfo = writeValueAsString(onlinePoker);
+                message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), pokerInfo);
                 roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
                 break;
 
@@ -80,6 +90,9 @@ public class PokerMessageService {
 
 
     private String writeValueAsString(Object object) {
+        if (Objects.isNull(object)) {
+            return null;
+        }
         try {
             return jacksonObjectMapper.writeValueAsString(object);
         } catch (Exception e) {

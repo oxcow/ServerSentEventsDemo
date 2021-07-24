@@ -85,9 +85,20 @@ const voteListener = (e) => {
 }
 
 const onlineListener = (e) => {
-    console.log("online listener...", e.data);
-    const message = JSON.parse(e.data);
+    const poker = JSON.parse(e.data);
     console.log(e.data, " online !!!");
+    const pokerHtml = `
+        <div class="column col-2 col-sm-6 col-md-4 col-lg-3 poker_${poker.id}">
+            <div class="card m-1">
+                <div class="card-header">
+                    <div class="card-title">${poker.name}</div>
+                </div>
+                <div class="card-body text-center">
+                    <span class="ec ec-zzz"></span>
+                </div>
+            </div>
+        </div>`;
+    $("#pokers").append($(pokerHtml));
 }
 
 const eventSource = (url) => {
