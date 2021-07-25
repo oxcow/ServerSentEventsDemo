@@ -11,10 +11,12 @@
     <script src='http://libs.baidu.com/jquery/2.1.1/jquery.min.js'></script>
     <script type="text/javascript" src="/poker/poker.js"></script>
     <script type="text/javascript">
-        $(function () {
-            const url = "/demo/broadcast/subscribe/${roomInfo.oneself.id}/${roomInfo.room.roomNo}"
-            eventSource(url);
-        })
+      $(function () {
+        const roomNo = ${roomInfo.room.roomNo};
+        const pokerId = ${roomInfo.oneself.id};
+        const url = "/demo/broadcast/subscribe/${roomInfo.oneself.id}/${roomInfo.room.roomNo}"
+        eventSource(roomNo, pokerId, url);
+      })
     </script>
     <title>${roomInfo.room.name?capitalize}'s Room</title>
 </head>
@@ -66,7 +68,7 @@
                 <div class="card-title">${poker.name?capitalize}</div>
                 <#-- <div class="card-subtitle text-gray">${poker.role}</div>-->
             </div>
-            <div class="card-body text-center">
+            <div class="card-body text-center p-0">
                 <#if poker.votes??>
                     <span class="ec ec-100"></span>
                 <#else>

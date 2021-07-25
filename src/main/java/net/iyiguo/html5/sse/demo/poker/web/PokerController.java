@@ -72,6 +72,8 @@ public class PokerController {
             pokerVoteService.cleanVote(pokerId, roomNo);
             PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.OFFLINE);
             pokerMessageService.handlePokerEvent(pokerEvent);
+
+            LOGGER.info("Poker【{}】离开房间【{}】。{}", pokerId, roomNo);
         }
         return true;
     }
@@ -79,6 +81,7 @@ public class PokerController {
     @PostMapping("/cmd")
     @ResponseBody
     public boolean sendMessage(@RequestBody PokerEvent pokerEvent) {
+        LOGGER.info("发送命令: {}", pokerEvent);
         pokerMessageService.handlePokerEvent(pokerEvent);
         return true;
     }
@@ -86,10 +89,11 @@ public class PokerController {
     @PostMapping("/{pokerId}/vote")
     @ResponseBody
     public boolean vote(@PathVariable("pokerId") Long pokerId,
-                        @RequestParam("roomId") Long roomId,
+                        @RequestParam("roomId") Long roomNo,
                         @RequestParam(name = "vote") Integer votes) {
-        pokerVoteService.votes(pokerId, votes, roomId);
-        PokerEvent pokerEvent = new PokerEvent(pokerId, roomId, PokerActionEnum.VOTE);
+        LOGGER.info("Poker【{}】在房间【{}】中投了【{}】票", pokerId, roomNo, votes);
+        pokerVoteService.votes(pokerId, votes, roomNo);
+        PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.VOTE);
         pokerMessageService.handlePokerEvent(pokerEvent);
         return true;
     }

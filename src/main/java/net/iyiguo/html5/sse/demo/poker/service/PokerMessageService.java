@@ -2,8 +2,10 @@ package net.iyiguo.html5.sse.demo.poker.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import net.iyiguo.html5.sse.demo.poker.entity.Poker;
 import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
+import net.iyiguo.html5.sse.demo.poker.model.PokerEmitter;
 import net.iyiguo.html5.sse.demo.poker.model.PokerEvent;
 import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
 import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVotesVo;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -41,21 +44,22 @@ public class PokerMessageService {
     public SseEmitter subscribeRoom(@PathVariable Long pokerId,
                                     @PathVariable Long roomId,
                                     @RequestHeader(value = "Last-Event-ID", defaultValue = "0") Long lastEventId) {
-        LOGGER.debug("Poker【{}】请求订阅【{}】广播消息，最后接收消息ID: {}", pokerId, roomId, lastEventId);
+        LOGGER.info("Poker【{}】请求进入房间【{}】。最后接收消息ID: {}", pokerId, roomId, lastEventId);
 
-        Optional<SseEmitter> object = roomBroadcastService.getRoomBroadcastObject(roomId, pokerId);
+        Optional<PokerEmitter> object = roomBroadcastService.getRoomBroadcastObject(roomId, pokerId);
         if (object.isPresent()) {
-            LOGGER.info("Poker#{} 已经在Room#{} 中", roomId, pokerId);
-            return object.get();
+            LOGGER.info("Poker#{} 已经在Room#{} 中. last id: {}", pokerId, roomId, object.get().getLastEventId());
+            return object.get().getEmitter();
         }
 
         final SseEmitter sseEmitter = new SseEmitter(-1L);
         roomBroadcastService.subscribe(roomId, pokerId, lastEventId, sseEmitter);
-        LOGGER.debug("【{}】加入到【{}】广播消息队列.{},{}", pokerId, roomId, lastEventId, sseEmitter);
+        LOGGER.info("Poker【{}】成功进入房间【{}】。广播消息队列.{},{}", pokerId, roomId, lastEventId, sseEmitter);
         return sseEmitter;
     }
 
     public void handlePokerEvent(PokerEvent pokerEvent) {
+        Set<Long> excludePokers = Sets.newHashSet(pokerEvent.getPokerId());
         switch (pokerEvent.getAction()) {
             case FLOP:
                 List<PokerVotesVo> pokerVotesDtoList = pokerVoteService.findAllVotes(pokerEvent.getRoomId());
@@ -74,13 +78,13 @@ public class PokerMessageService {
             case OFFLINE:
                 String text = writeValueAsString(pokerEvent);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), text);
-                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message, excludePokers);
                 break;
             case ONLINE:
                 Poker onlinePoker = pokerService.getPokerById(pokerEvent.getPokerId()).orElse(null);
                 String pokerInfo = writeValueAsString(onlinePoker);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), pokerInfo);
-                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message, excludePokers);
                 break;
 
             default:

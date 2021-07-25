@@ -40,4 +40,13 @@ public class PokerEvent {
     public void setPokerId(Long pokerId) {
         this.pokerId = pokerId;
     }
+
+    @Override
+    public String toString() {
+        return "PokerEvent{" +
+                "action=" + action +
+                ", roomId=" + roomId +
+                ", pokerId=" + pokerId +
+                '}';
+    }
 }

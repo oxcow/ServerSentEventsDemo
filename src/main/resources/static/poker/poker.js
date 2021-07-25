@@ -35,10 +35,8 @@ const shuffleEvent = (roomId, pokerId) => {
   });
 }
 
-const afterVoted = (pokerId, vote) => {
-  const className = ".poker_" + pokerId;
-  $(className).find(".card").addClass('bg-primary');
-  $(className).find(".card-body").html(vote);
+const afterVoted = (pokerId) => {
+  $(`.poker_${pokerId}`).find(".card-body").html('<span class="ec ec-100"></span>');
 }
 const afterFlop = (pokerId, vote) => {
   const className = ".poker_" + pokerId;
@@ -57,7 +55,7 @@ const voteEvent = (roomId, pokerId, vote) => {
     {roomId: roomId, pokerId: pokerId, vote: vote},
     function (result) {
       console.log(pokerId, "vote ", vote, " response: ", result);
-      //afterVoted(pokerId, vote);
+      afterVoted(pokerId);
     }
   )
 }
@@ -81,8 +79,7 @@ const shuffleListener = (e) => {
 const voteListener = (e) => {
   console.log("vote listener...", e.data);
   const message = JSON.parse(e.data);
-  const className = ".poker_" + message.pokerId;
-  $(className).find(".card-body").html('<span class="ec ec-100"></span>');
+  afterVoted(message.pokerId);
 }
 
 const onlineListener = (e) => {
@@ -105,15 +102,16 @@ const onlineListener = (e) => {
 const offlineListener = (e) => {
   console.log("off line", e.data);
   const message = JSON.parse(e.data);
-  const pokerClass = `.poker_${message.pokerId}`;
-  $(pokerClass).remove();
+  $(`.poker_${message.pokerId}`).remove();
 }
 
-let eveSource;
+let eveSource, _roomNo, _pokerId;
 
-const eventSource = (url) => {
+const eventSource = (roomNo, pokerId, url) => {
+
   if (typeof (EventSource) !== "undefined") {
-
+    _roomNo = roomNo;
+    _pokerId = pokerId;
     evtSource = new EventSource(url, {withCredentials: true});
 
     evtSource.onopen = eventSourceOpen;
@@ -139,7 +137,6 @@ const offlineEvent = (roomNo, pokerId) => {
 }
 
 window.addEventListener('beforeunload', (event) => {
-  // Cancel the event as stated by the standard.
   evtSource.close();
-  offlineEvent(1, 5);
+  offlineEvent(_roomNo, _pokerId);
 });

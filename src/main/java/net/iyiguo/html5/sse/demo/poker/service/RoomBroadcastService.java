@@ -32,13 +32,13 @@ public class RoomBroadcastService {
         LOGGER.debug("完成所有浏览器到服务端的消息链接");
     }
 
-    public Optional<SseEmitter> getRoomBroadcastObject(Long roomId, Long pokerId) {
+    public Optional<PokerEmitter> getRoomBroadcastObject(Long roomId, Long pokerId) {
         Optional<PokerEmitter> object = broadcastUsers.stream()
                 .filter(obj -> obj.getRoomId().equals(roomId))
                 .filter(obj -> obj.getPokerId().equals(pokerId))
                 .findFirst();
         if (object.isPresent()) {
-            return Optional.ofNullable(object.get().getEmitter());
+            return Optional.ofNullable(object.get());
         } else {
             return Optional.empty();
         }
@@ -83,11 +83,20 @@ public class RoomBroadcastService {
         return true;
     }
 
-    public void broadcast(Long roomId, PokerMessage pokerMessage) {
+    public void broadcast(Long roomNo, PokerMessage pokerMessage) {
+        this.broadcast(roomNo, pokerMessage, null);
+    }
+
+    public void broadcast(Long roomId, PokerMessage pokerMessage, Set<Long> excludePorkers) {
         if (Objects.nonNull(pokerMessage)) {
             broadcastUsers.stream()
                     .filter(obj -> obj.getRoomId().equals(roomId))
                     .forEach(obj -> {
+                        if (Objects.nonNull(excludePorkers) && !excludePorkers.isEmpty()) {
+                            if (excludePorkers.contains(obj.getPokerId())) {
+                                return;
+                            }
+                        }
                         SseEmitter emitter = obj.getEmitter();
                         try {
                             emitter.send(SseEmitter.event()
