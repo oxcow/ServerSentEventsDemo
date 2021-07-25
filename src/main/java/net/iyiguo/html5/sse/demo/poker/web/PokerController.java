@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,19 @@ public class PokerController {
                             @RequestParam("name") String name) {
         Poker poker = pokerService.savePoker(name);
         return String.format("redirect:/demo/pokers/%d/enterRoom/%d", poker.getId(), roomNo);
+    }
+
+    @DeleteMapping("/{pokerId}/room/{roomNo}")
+    @ResponseBody
+    public boolean leaveRoom(@PathVariable("pokerId") Long pokerId,
+                             @PathVariable("roomNo") Long roomNo) {
+        boolean isLeave = roomPokersService.pokerLeaveRoom(pokerId, roomNo);
+        if (isLeave) {
+            pokerVoteService.cleanVote(pokerId, roomNo);
+            PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.OFFLINE);
+            pokerMessageService.handlePokerEvent(pokerEvent);
+        }
+        return true;
     }
 
     @PostMapping("/cmd")

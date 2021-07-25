@@ -39,11 +39,9 @@
             <#include "./poker_master_bar.ftl">
         </div>
         <div class="divider"></div>
-    <#else>
-        <#include "./poker_vote_bar.ftl">
-        <div class="divider"></div>
     </#if>
-
+    <#include "./poker_vote_bar.ftl">
+    <div class="divider"></div>
     <#if roomInfo.pokers?size gt 0>
         <div class="columns my-2">
             <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">
@@ -75,11 +73,11 @@
                     <span class="ec ec-zzz"></span>
                 </#if>
             </div>
-<#--            <div class="card-footer">-->
-<#--                <button class="btn btn-link float-right">-->
-<#--                    <span class="ec ec-alarm-clock ec_f_md"></span>-->
-<#--                </button>-->
-<#--            </div>-->
+            <#--            <div class="card-footer">-->
+            <#--                <button class="btn btn-link float-right">-->
+            <#--                    <span class="ec ec-alarm-clock ec_f_md"></span>-->
+            <#--                </button>-->
+            <#--            </div>-->
         </div>
     </div>
 </#macro>

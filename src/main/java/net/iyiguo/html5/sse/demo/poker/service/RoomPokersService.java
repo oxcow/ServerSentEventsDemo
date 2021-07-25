@@ -88,6 +88,14 @@ public class RoomPokersService {
         return roomPokersVo;
     }
 
+    public boolean pokerLeaveRoom(Long pokerId, Long roomNo) {
+        Optional<Poker> pokerOptional = pokerDao.getById(pokerId);
+        if (pokerOptional.isPresent()) {
+            return roomPokersCache.remove(roomNo, pokerOptional.get());
+        }
+        return false;
+    }
+
     private Map<Long, Integer> getPokerVotes(Long roomNo) {
         List<PokerVote> pokerVotes = pokerVoteDao.findByRoomId(roomNo);
         return pokerVotes.stream().collect(Collectors.toMap(PokerVote::getPorkId, PokerVote::getVotes));

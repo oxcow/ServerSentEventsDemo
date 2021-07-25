@@ -71,6 +71,7 @@ public class PokerMessageService {
                 roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
                 break;
             case VOTE:
+            case OFFLINE:
                 String text = writeValueAsString(pokerEvent);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), text);
                 roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
