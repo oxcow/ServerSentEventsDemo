@@ -3,7 +3,7 @@
         <div class="hero hero-sm p-2">
             <div class="hero-body">
                 <h1>Simple Poker</h1>
-                <p>This is a hero example</p>
+                <p>Poker: ${roomInfo.oneself.name}</p>
             </div>
         </div>
     </div>

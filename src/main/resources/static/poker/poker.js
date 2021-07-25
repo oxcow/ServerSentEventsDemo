@@ -6,38 +6,34 @@ const ACTIONS = {
   VOTE: "VOTE",
   ONLINE: "ONLINE",
   OFFLINE: "OFFLINE",
+  CANCEL: "CANCEL",
 }
 
-const flopEvent = (roomId, pokerId) => {
-  console.log("翻牌");
+const sendCmd = (roomNo, pokerId, action, callback) => {
+  console.log("send command", action, pokerId);
   $.ajax({
     url: "/demo/pokers/cmd",
     datatype: "json",
     contentType: "application/json;charset=utf-8",
-    data: JSON.stringify({action: ACTIONS.FLOP, roomId: roomId, pokerId: pokerId}),
+    data: JSON.stringify({action: action, roomId: roomNo, pokerId: pokerId}),
     type: 'POST',
-    success: function (result) {
-      console.log("send flop cmd success", result);
-    }
+    success: callback
   });
 }
 
-const shuffleEvent = (roomId, pokerId) => {
-  console.log("洗牌");
-  $.ajax({
-    url: "/demo/pokers/cmd",
-    type: 'post',
-    contentType: "application/json;charset=utf-8",
-    data: JSON.stringify({action: ACTIONS.SHUFFLE, roomId: roomId, pokerId: pokerId}),
-    function(result) {
-      outPrint('output', "Master click shuffle Response: " + result);
-    }
+const flopEvent = (roomNo, pokerId) => {
+  sendCmd(roomNo, pokerId, ACTIONS.FLOP, (result) => {
+    console.log("Send Flop cmd success", result);
   });
 }
 
-const afterVoted = (pokerId) => {
-  $(`.poker_${pokerId}`).find(".card-body").html('<span class="ec ec-100"></span>');
+const shuffleEvent = (roomNo, pokerId) => {
+  sendCmd(roomNo, pokerId, ACTIONS.SHUFFLE, (result) => {
+    console.log("Send Shuffle cmd success", result);
+  });
 }
+
+
 const afterFlop = (pokerId, vote) => {
   const className = ".poker_" + pokerId;
   $(className).find(".card").addClass('bg-success');
@@ -47,6 +43,12 @@ const afterShuffle = () => {
   $(".card").removeClass('bg-primary');
   $(".card").removeClass('bg-success');
   $(".card-body").html('<span class="ec ec-zzz"></span>');
+}
+const afterVoted = (pokerId) => {
+  $(`.poker_${pokerId}`).find(".card-body").html('<span class="ec ec-100"></span>');
+}
+const afterCancelVoted = (pokerId) => {
+  $(`.poker_${pokerId}`).find(".card-body").html('<span class="ec ec-zzz"></span>');
 }
 
 const voteEvent = (roomId, pokerId, vote) => {
@@ -60,9 +62,16 @@ const voteEvent = (roomId, pokerId, vote) => {
   )
 }
 
-const eventSourceOpen = (e) => {
-  console.log("connected...", e);
+const cancelEvent = (roomId, pokerId) => {
+  $.post(
+    "/demo/pokers/" + pokerId + "/vote",
+    {roomId: roomId, pokerId: pokerId},
+    function (result) {
+      afterCancelVoted(pokerId);
+    }
+  )
 }
+
 const flopListener = (e) => {
   const messages = JSON.parse(e.data);
   messages.map((msg, idx) => {
@@ -80,6 +89,12 @@ const voteListener = (e) => {
   console.log("vote listener...", e.data);
   const message = JSON.parse(e.data);
   afterVoted(message.pokerId);
+}
+
+const cancelListener = (e) => {
+  console.log("cancel vote listener...", e.data);
+  const message = JSON.parse(e.data);
+  afterCancelVoted(message.pokerId);
 }
 
 const onlineListener = (e) => {
@@ -114,13 +129,20 @@ const eventSource = (roomNo, pokerId, url) => {
     _pokerId = pokerId;
     evtSource = new EventSource(url, {withCredentials: true});
 
-    evtSource.onopen = eventSourceOpen;
+    // 第一次服务器发送消息到客户端时触发。因此不能在该回调方法中发送上线信息。
+    evtSource.addEventListener("open", function (e) {
+      console.log("connected .."+ e.currentTarget.url);
+      // sendCmd(_roomNo, _pokerId, ACTIONS.ONLINE, (result) => {
+      //   console.log("Send Online cmd success");
+      // });
+    }, false);
 
     evtSource.addEventListener(ACTIONS.FLOP, flopListener);
     evtSource.addEventListener(ACTIONS.SHUFFLE, shuffleListener);
     evtSource.addEventListener(ACTIONS.VOTE, voteListener);
     evtSource.addEventListener(ACTIONS.ONLINE, onlineListener);
     evtSource.addEventListener(ACTIONS.OFFLINE, offlineListener);
+    evtSource.addEventListener(ACTIONS.CANCEL, cancelListener);
 
     return evtSource;
 
@@ -129,14 +151,13 @@ const eventSource = (roomNo, pokerId, url) => {
   }
 }
 
-
-const offlineEvent = (roomNo, pokerId) => {
+const handleOfflineEvent = (roomNo, pokerId) => {
   const httpRequest = new XMLHttpRequest();
-  httpRequest.open('DELETE', `/demo/pokers/${pokerId}/room/${roomNo}`, true);
+  httpRequest.open('PUT', `/demo/pokers/${pokerId}/room/${roomNo}`, true);
   httpRequest.send();
 }
 
 window.addEventListener('beforeunload', (event) => {
   evtSource.close();
-  offlineEvent(_roomNo, _pokerId);
+  handleOfflineEvent(_roomNo, _pokerId);
 });

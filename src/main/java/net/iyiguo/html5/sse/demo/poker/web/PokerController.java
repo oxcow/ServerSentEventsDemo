@@ -13,16 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller()
+import java.util.Objects;
+
+@Controller
 @RequestMapping("/demo/pokers")
 public class PokerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokerController.class);
@@ -63,7 +65,7 @@ public class PokerController {
         return String.format("redirect:/demo/pokers/%d/enterRoom/%d", poker.getId(), roomNo);
     }
 
-    @DeleteMapping("/{pokerId}/room/{roomNo}")
+    @PutMapping("/{pokerId}/room/{roomNo}")
     @ResponseBody
     public boolean leaveRoom(@PathVariable("pokerId") Long pokerId,
                              @PathVariable("roomNo") Long roomNo) {
@@ -90,10 +92,15 @@ public class PokerController {
     @ResponseBody
     public boolean vote(@PathVariable("pokerId") Long pokerId,
                         @RequestParam("roomId") Long roomNo,
-                        @RequestParam(name = "vote") Integer votes) {
+                        @RequestParam(name = "vote", required = false) Integer votes) {
         LOGGER.info("Poker【{}】在房间【{}】中投了【{}】票", pokerId, roomNo, votes);
-        pokerVoteService.votes(pokerId, votes, roomNo);
         PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.VOTE);
+        if (Objects.nonNull(votes)) {
+            pokerVoteService.votes(pokerId, votes, roomNo);
+        } else {
+            pokerVoteService.cleanVote(pokerId, roomNo);
+            pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.CANCEL);
+        }
         pokerMessageService.handlePokerEvent(pokerEvent);
         return true;
     }
