@@ -91,7 +91,7 @@ public class PokerController {
     @PostMapping("/{pokerId}/vote")
     @ResponseBody
     public boolean vote(@PathVariable("pokerId") Long pokerId,
-                        @RequestParam("roomId") Long roomNo,
+                        @RequestParam("roomNo") Long roomNo,
                         @RequestParam(name = "vote", required = false) Integer votes) {
         LOGGER.info("Poker【{}】在房间【{}】中投了【{}】票", pokerId, roomNo, votes);
         PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.VOTE);

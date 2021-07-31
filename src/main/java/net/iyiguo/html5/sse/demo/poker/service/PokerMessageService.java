@@ -62,30 +62,30 @@ public class PokerMessageService {
         Set<Long> excludePokers = Sets.newHashSet(pokerEvent.getPokerId());
         switch (pokerEvent.getAction()) {
             case FLOP:
-                List<PokerVotesVo> pokerVotesDtoList = pokerVoteService.findAllVotes(pokerEvent.getRoomId());
+                List<PokerVotesVo> pokerVotesDtoList = pokerVoteService.findAllVotes(pokerEvent.getRoomNo());
                 if (!pokerVotesDtoList.isEmpty()) {
                     String text = writeValueAsString(pokerVotesDtoList);
                     PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.FLOP, text);
-                    roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                    roomBroadcastService.broadcast(pokerEvent.getRoomNo(), message);
                 }
                 break;
             case SHUFFLE:
-                pokerVoteService.cleanAllVote(pokerEvent.getRoomId());
+                pokerVoteService.cleanAllVote(pokerEvent.getRoomNo());
                 PokerMessage message = new PokerMessage(atomicLong.getAndIncrement(), PokerActionEnum.SHUFFLE, "shuffle");
-                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message);
+                roomBroadcastService.broadcast(pokerEvent.getRoomNo(), message);
                 break;
             case VOTE:
             case CANCEL:
             case OFFLINE:
                 String text = writeValueAsString(pokerEvent);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), text);
-                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message, excludePokers);
+                roomBroadcastService.broadcast(pokerEvent.getRoomNo(), message, excludePokers);
                 break;
             case ONLINE:
                 Poker onlinePoker = pokerService.getPokerById(pokerEvent.getPokerId()).orElse(null);
                 String pokerInfo = writeValueAsString(onlinePoker);
                 message = new PokerMessage(atomicLong.getAndIncrement(), pokerEvent.getAction(), pokerInfo);
-                roomBroadcastService.broadcast(pokerEvent.getRoomId(), message, excludePokers);
+                roomBroadcastService.broadcast(pokerEvent.getRoomNo(), message, excludePokers);
                 break;
 
             default:

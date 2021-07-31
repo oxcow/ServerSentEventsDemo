@@ -18,7 +18,7 @@
         eventSource(roomNo, pokerId, url);
       })
     </script>
-    <title>${roomInfo.room.name?capitalize}'s Room</title>
+    <title>${roomInfo.oneself.name?capitalize}'s Room</title>
 </head>
 <body>
 <div class="container">

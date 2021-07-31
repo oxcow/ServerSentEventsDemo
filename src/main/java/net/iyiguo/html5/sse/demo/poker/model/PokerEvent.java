@@ -5,15 +5,15 @@ import net.iyiguo.html5.sse.demo.poker.enums.PokerActionEnum;
 public class PokerEvent {
 
     private PokerActionEnum action;
-    private Long roomId;
+    private Long roomNo;
     private Long pokerId;
 
     public PokerEvent() {
     }
 
-    public PokerEvent(Long pokerId, Long roomId, PokerActionEnum action) {
+    public PokerEvent(Long pokerId, Long roomNo, PokerActionEnum action) {
         this.action = action;
-        this.roomId = roomId;
+        this.roomNo = roomNo;
         this.pokerId = pokerId;
     }
 
@@ -25,12 +25,12 @@ public class PokerEvent {
         this.action = action;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getRoomNo() {
+        return roomNo;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setRoomNo(Long roomNo) {
+        this.roomNo = roomNo;
     }
 
     public Long getPokerId() {
@@ -45,7 +45,7 @@ public class PokerEvent {
     public String toString() {
         return "PokerEvent{" +
                 "action=" + action +
-                ", roomId=" + roomId +
+                ", roomNo=" + roomNo +
                 ", pokerId=" + pokerId +
                 '}';
     }

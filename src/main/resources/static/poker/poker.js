@@ -9,30 +9,31 @@ const ACTIONS = {
   CANCEL: "CANCEL",
 }
 
-const sendCmd = (roomNo, pokerId, action, callback) => {
-  console.log("send command", action, pokerId);
+const sendCmd = (dataObject, callback) => {
+  console.log("send command dataObject=", dataObject);
   $.ajax({
     url: "/demo/pokers/cmd",
     datatype: "json",
     contentType: "application/json;charset=utf-8",
-    data: JSON.stringify({action: action, roomId: roomNo, pokerId: pokerId}),
+    data: JSON.stringify(dataObject),
     type: 'POST',
-    success: callback
+    success: callback,
   });
 }
 
 const flopEvent = (roomNo, pokerId) => {
-  sendCmd(roomNo, pokerId, ACTIONS.FLOP, (result) => {
+  const action = ACTIONS.FLOP;
+  sendCmd({roomNo, pokerId, action}, (result) => {
     console.log("Send Flop cmd success", result);
   });
 }
 
 const shuffleEvent = (roomNo, pokerId) => {
-  sendCmd(roomNo, pokerId, ACTIONS.SHUFFLE, (result) => {
+  const action = ACTIONS.SHUFFLE;
+  sendCmd({roomNo, pokerId, action}, (result) => {
     console.log("Send Shuffle cmd success", result);
   });
 }
-
 
 const afterFlop = (pokerId, vote) => {
   const className = ".poker_" + pokerId;
@@ -51,10 +52,10 @@ const afterCancelVoted = (pokerId) => {
   $(`.poker_${pokerId}`).find(".card-body").html('<span class="ec ec-zzz"></span>');
 }
 
-const voteEvent = (roomId, pokerId, vote) => {
-  $.post(
-    "/demo/pokers/" + pokerId + "/vote",
-    {roomId: roomId, pokerId: pokerId, vote: vote},
+const voteEvent = (roomNo, pokerId, vote) => {
+  const data = {roomNo, pokerId, vote};
+  $.post("/demo/pokers/" + pokerId + "/vote",
+    data,
     function (result) {
       console.log(pokerId, "vote ", vote, " response: ", result);
       afterVoted(pokerId);
@@ -63,9 +64,9 @@ const voteEvent = (roomId, pokerId, vote) => {
 }
 
 const cancelEvent = (roomId, pokerId) => {
-  $.post(
-    "/demo/pokers/" + pokerId + "/vote",
-    {roomId: roomId, pokerId: pokerId},
+  const data = {roomNo, pokerId};
+  $.post("/demo/pokers/" + pokerId + "/vote",
+    data,
     function (result) {
       afterCancelVoted(pokerId);
     }
