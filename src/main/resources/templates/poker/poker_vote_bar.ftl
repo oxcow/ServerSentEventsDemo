@@ -5,11 +5,11 @@
                     onclick="voteEvent('${roomInfo.room.roomNo}', '${roomInfo.oneself.id}', ${sp})">${sp}
             </button>
         </#list>
-        <button class="btn btn-link btn-action mr-2 my-2" style="border: 0;">
-            <span class="ec ec-sleepy ec_f_lg"></span>
-        </button>
+<!--        <button class="btn btn-link btn-action mr-2 my-2">-->
+<!--            <span class="ec ec-sleepy ec_f_lg"></span>-->
+<!--        </button>-->
     </div>
-    <div class="column col-2 col-mr-auto col-sm-12 text-right">
+    <div class="column col-2 col-mr-auto col-sm-12 mr-2 my-2">
         <button class="btn btn-block"
                 onclick="cancelEvent(${roomInfo.room.roomNo}, ${roomInfo.oneself.id});">
             Cancel

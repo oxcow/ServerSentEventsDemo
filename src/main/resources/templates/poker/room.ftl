@@ -49,7 +49,7 @@
             <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">
                 <div class="columns" id="pokers">
                     <#list roomInfo.pokers as poker>
-                        <@pokerCard poker />
+                        <@pokerCard poker roomInfo.oneself.id==poker.id />
                     </#list>
                 </div>
             </div>
@@ -61,25 +61,25 @@
 </body>
 </html>
 
-<#macro pokerCard poker>
+<#macro pokerCard poker isSelf>
     <div class="column col-2 col-sm-6 col-md-4 col-lg-3 poker_${poker.id}">
-        <div class="card m-1">
-            <div class="card-header">
+        <div class="${isSelf?string('card m-1 card_self','card m-1')}">
+            <div class="card-header text-center p-1">
                 <div class="card-title">${poker.name?capitalize}</div>
                 <#-- <div class="card-subtitle text-gray">${poker.role}</div>-->
             </div>
-            <div class="card-body text-center p-0">
+            <div class="card-body text-center">
                 <#if poker.votes??>
                     <span class="ec ec-100"></span>
                 <#else>
                     <span class="ec ec-zzz"></span>
                 </#if>
             </div>
-            <#--            <div class="card-footer">-->
-            <#--                <button class="btn btn-link float-right">-->
-            <#--                    <span class="ec ec-alarm-clock ec_f_md"></span>-->
-            <#--                </button>-->
-            <#--            </div>-->
+            <#if isSelf>
+            <div class="card-footer text-right p-2">
+                <span class="ec ec-footprints"></span>
+            </div>
+            </#if>
         </div>
     </div>
 </#macro>
