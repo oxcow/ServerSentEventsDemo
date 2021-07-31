@@ -1,36 +1,28 @@
 package net.iyiguo.html5.sse.demo.poker.service;
 
-import com.google.common.collect.Sets;
-import net.iyiguo.html5.sse.demo.poker.model.PokerEmitter;
-import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
+import java.io.IOException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.annotation.PreDestroy;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.google.common.collect.Sets;
+import net.iyiguo.html5.sse.demo.poker.model.PokerEmitter;
+import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
 
+/**
+ * @author leeyee
+ */
 @Service
 public class RoomBroadcastService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomBroadcastService.class);
 
     private Set<PokerEmitter> broadcastUsers = Sets.newConcurrentHashSet();
-
-    @PreDestroy
-    public void destroy() {
-        if (!broadcastUsers.isEmpty()) {
-            broadcastUsers.forEach(obj -> obj.getEmitter().complete());
-            broadcastUsers = Sets.newConcurrentHashSet();
-        }
-        LOGGER.debug("完成所有浏览器到服务端的消息链接");
-    }
 
     public Optional<PokerEmitter> getRoomBroadcastObject(Long roomId, Long pokerId) {
         Optional<PokerEmitter> object = broadcastUsers.stream()
