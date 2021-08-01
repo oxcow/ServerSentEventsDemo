@@ -44,12 +44,13 @@
     </#if>
     <#include "./poker_vote_bar.ftl">
     <div class="divider"></div>
-    <#if roomInfo.pokers?size gt 0>
+    <#if roomInfo.oneself??>
         <div class="columns my-2">
             <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">
                 <div class="columns" id="pokers">
+                    <@pokerCard roomInfo.oneself true />
                     <#list roomInfo.pokers as poker>
-                        <@pokerCard poker roomInfo.oneself.id==poker.id />
+                        <@pokerCard poker false />
                     </#list>
                 </div>
             </div>

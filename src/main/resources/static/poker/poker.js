@@ -135,11 +135,19 @@ const eventSource = (roomNo, pokerId, url) => {
 
     // 第一次服务器发送消息到客户端时触发。因此不能在该回调方法中发送上线信息。
     evtSource.addEventListener("open", function (e) {
-      console.log("connected .."+ e.currentTarget.url);
-      // sendCmd(_roomNo, _pokerId, ACTIONS.ONLINE, (result) => {
-      //   console.log("Send Online cmd success");
-      // });
+      console.log("connected .."+ e.currentTarget.url, e.comment);
     }, false);
+
+    evtSource.onerror = function (event) {
+      console.log(new Date(), "event source error", event);
+      // 0:connecting 1:open 2:closed
+      if (this.readyState == 0) {
+        console.log("connecting retry...");
+      } else if (this.readyState == 2) {
+        console.log("close .....");
+        //this.close();
+      }
+    }
 
     evtSource.addEventListener(ACTIONS.FLOP, flopListener);
     evtSource.addEventListener(ACTIONS.SHUFFLE, shuffleListener);

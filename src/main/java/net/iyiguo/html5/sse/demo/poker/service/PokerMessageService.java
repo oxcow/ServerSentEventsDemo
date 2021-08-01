@@ -1,6 +1,22 @@
 package net.iyiguo.html5.sse.demo.poker.service;
 
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import net.iyiguo.html5.sse.demo.poker.entity.Poker;
@@ -9,19 +25,6 @@ import net.iyiguo.html5.sse.demo.poker.model.PokerEmitter;
 import net.iyiguo.html5.sse.demo.poker.model.PokerEvent;
 import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
 import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVotesVo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class PokerMessageService {
@@ -107,4 +110,27 @@ public class PokerMessageService {
         }
     }
 
+
+    @Scheduled(cron = "5/15 * * * * ?")
+    private void heart() {
+        Set<PokerEmitter> offlinePokers = Sets.newHashSet();
+        roomBroadcastService.getBroadcastUsers().forEach(pokerEmitter -> {
+            SseEmitter emitter = pokerEmitter.getEmitter();
+            if (Objects.nonNull(emitter)) {
+                try {
+                    emitter.send(SseEmitter.event().comment("heart"));
+                } catch (IOException e) {
+                    LOGGER.warn("lose connection with poker {} roomNo {}. {}",
+                            pokerEmitter.getPokerId(), pokerEmitter.getRoomId(), e.getMessage());
+                    emitter.completeWithError(e);
+                    offlinePokers.add(pokerEmitter);
+                }
+            }
+        });
+
+        if (!offlinePokers.isEmpty()) {
+            roomBroadcastService.unsubscribe(offlinePokers);
+            offlinePokers.forEach(offlinePoker -> handlePokerEvent(new PokerEvent(offlinePoker.getPokerId(), offlinePoker.getRoomId(), PokerActionEnum.OFFLINE)));
+        }
+    }
 }

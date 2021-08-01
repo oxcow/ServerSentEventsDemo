@@ -1,6 +1,7 @@
 package net.iyiguo.html5.sse.demo.poker.service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +24,10 @@ public class RoomBroadcastService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomBroadcastService.class);
 
     private Set<PokerEmitter> broadcastUsers = Sets.newConcurrentHashSet();
+
+    public Set<PokerEmitter> getBroadcastUsers() {
+        return broadcastUsers;
+    }
 
     public Optional<PokerEmitter> getRoomBroadcastObject(Long roomId, Long pokerId) {
         Optional<PokerEmitter> object = broadcastUsers.stream()
@@ -75,6 +80,11 @@ public class RoomBroadcastService {
         return true;
     }
 
+    public boolean unsubscribe(Collection<PokerEmitter> pokerEmitters) {
+        return broadcastUsers.removeAll(pokerEmitters);
+    }
+
+
     public void broadcast(Long roomNo, PokerMessage pokerMessage) {
         this.broadcast(roomNo, pokerMessage, null);
     }
@@ -94,6 +104,7 @@ public class RoomBroadcastService {
                             emitter.send(SseEmitter.event()
                                     .id(pokerMessage.getId().toString())
                                     .name(pokerMessage.getAction().name())
+                                    .reconnectTime(60 * 1000)
                                     .data(pokerMessage.getMessage(), MediaType.APPLICATION_JSON));
                             LOGGER.debug("[{}] 发送消息 {} 到 Poker#{}(Room#{})",
                                     pokerMessage.getAction(), pokerMessage.getMessage(), obj.getPokerId(), obj.getRoomId());

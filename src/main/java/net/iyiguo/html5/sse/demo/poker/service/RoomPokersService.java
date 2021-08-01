@@ -14,6 +14,7 @@ import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVo;
 import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVotesVo;
 import net.iyiguo.html5.sse.demo.poker.web.dto.RoomPokersVo;
 import net.iyiguo.html5.sse.demo.poker.web.dto.RoomVo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 
 /**
@@ -80,8 +82,9 @@ public class RoomPokersService {
                 }
                 if (poker.getId().equals(pokerId)) {
                     roomPokersVo.setOneself(pokerVo);
+                } else {
+                    pokers.add(pokerVo);
                 }
-                pokers.add(pokerVo);
                 roomPokersVo.setPokers(pokers);
             });
         }
