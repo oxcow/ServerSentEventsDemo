@@ -44,6 +44,10 @@
     </#if>
     <#include "./poker_vote_bar.ftl">
     <div class="divider"></div>
+    <div class="columns d-hide poker_votes">
+        <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">
+        </div>
+    </div>
     <#if roomInfo.oneself??>
         <div class="columns my-2">
             <div class="column col-10 col-mx-auto col-sm-12 col-md-11 col-lg-11 my-2">

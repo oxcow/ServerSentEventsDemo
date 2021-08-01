@@ -75,15 +75,37 @@ const cancelEvent = (roomNo, pokerId) => {
 
 const flopListener = (e) => {
   const messages = JSON.parse(e.data);
+  let map = new Map();
   messages.map((msg, idx) => {
     afterFlop(msg.pokerId, msg.votes);
+
+    if (map.has(msg.votes)) {
+        map.set(msg.votes, map.get(msg.votes) + 1);
+    } else {
+        map.set(msg.votes, 1);
+    }
   });
+  let statics = "";
+  let votes = 0;
+  let p = 0;
+  for (let [k, v] of map) {
+    const t = `Vote ${k} have ${v}; `
+    statics += t;
+    votes += k * v;
+    p += v;
+  }
+  const avg = Math.ceil(votes/p);
+  statics += ` Avg: ${avg}`;
+  console.log("map .... ", map);
+  $(".poker_votes .column").html(statics);
+  $(".poker_votes").removeClass("d-hide");
   console.log("flop listener...", messages);
 }
 
 const shuffleListener = (e) => {
   console.log("shuffle listener...", e.data);
   afterShuffle();
+  $(".poker_votes").addClass("d-hide");
 }
 
 const voteListener = (e) => {
