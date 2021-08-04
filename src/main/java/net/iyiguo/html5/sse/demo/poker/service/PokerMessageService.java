@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,9 @@ public class PokerMessageService {
     @Autowired
     private PokerService pokerService;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     public SseEmitter subscribeRoom(@PathVariable Long pokerId,
                                     @PathVariable Long roomId,
                                     @RequestHeader(value = "Last-Event-ID", defaultValue = "0") Long lastEventId) {
@@ -56,8 +60,11 @@ public class PokerMessageService {
         }
 
         final SseEmitter sseEmitter = new SseEmitter(-1L);
-        roomBroadcastService.subscribe(roomId, pokerId, lastEventId, sseEmitter);
+        object = roomBroadcastService.subscribe(roomId, pokerId, lastEventId, sseEmitter);
         LOGGER.info("Poker【{}】成功进入房间【{}】。广播消息队列.{},{}", pokerId, roomId, lastEventId, sseEmitter);
+
+        eventPublisher.publishEvent(new EntityCreatedEvent(object.get()));
+
         return sseEmitter;
     }
 
@@ -94,6 +101,8 @@ public class PokerMessageService {
             default:
                 LOGGER.info("Do Nothing!!");
         }
+
+        eventPublisher.publishEvent(new EntityCreatedEvent(pokerEvent));
 
     }
 

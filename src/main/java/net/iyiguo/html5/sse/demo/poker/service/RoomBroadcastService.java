@@ -41,7 +41,7 @@ public class RoomBroadcastService {
         }
     }
 
-    public boolean subscribe(Long roomId, Long pokerId, Long lastEventId, SseEmitter sseEmitter) {
+    public Optional<PokerEmitter> subscribe(Long roomId, Long pokerId, Long lastEventId, SseEmitter sseEmitter) {
 
         Optional<PokerEmitter> exist = broadcastUsers.stream()
                 .filter(obj -> obj.getRoomId().equals(roomId))
@@ -49,7 +49,7 @@ public class RoomBroadcastService {
                 .findFirst();
         if (exist.isPresent()) {
             LOGGER.info("Poker#{} 已经在Room#{} 中", roomId, pokerId);
-            return false;
+            return exist;
         }
 
         // 当前订阅用户是否重新新开页面或者浏览器登录
@@ -62,10 +62,11 @@ public class RoomBroadcastService {
                 .findFirst()
                 .orElse(lastEventId);
 
-        boolean isReg = broadcastUsers.add(new PokerEmitter(roomId, pokerId, finalLastEventId, sseEmitter));
+        PokerEmitter newPoker = new PokerEmitter(roomId, pokerId, finalLastEventId, sseEmitter);
+        broadcastUsers.add(newPoker);
 
         LOGGER.debug("当前Room人数:{}", broadcastUsers.size());
-        return isReg;
+        return Optional.of(newPoker);
     }
 
     public boolean unsubscribe(Long roomId, Long pokerId, SseEmitter sseEmitter) {
