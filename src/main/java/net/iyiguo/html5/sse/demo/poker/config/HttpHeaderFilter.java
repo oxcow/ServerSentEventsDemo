@@ -8,14 +8,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author William.li
  * @date 2021/8/5
  */
-@WebFilter("/demo/*")
 public class HttpHeaderFilter implements Filter {
 
     @Override

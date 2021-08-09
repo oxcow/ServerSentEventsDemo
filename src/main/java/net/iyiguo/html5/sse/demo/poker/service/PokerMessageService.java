@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,9 +46,7 @@ public class PokerMessageService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    public SseEmitter subscribeRoom(@PathVariable Long pokerId,
-                                    @PathVariable Long roomId,
-                                    @RequestHeader(value = "Last-Event-ID", defaultValue = "0") Long lastEventId) {
+    public SseEmitter subscribeRoom(Long pokerId, Long roomId, Long lastEventId) {
         LOGGER.info("Poker【{}】请求进入房间【{}】。最后接收消息ID: {}", pokerId, roomId, lastEventId);
 
         Optional<PokerEmitter> object = roomBroadcastService.getRoomBroadcastObject(roomId, pokerId);
