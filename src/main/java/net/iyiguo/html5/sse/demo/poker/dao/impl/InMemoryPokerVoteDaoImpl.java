@@ -20,7 +20,7 @@ import java.util.Objects;
  * @date 2021/7/19
  */
 @Repository
-public class PokerVoteMemoryDaoImpl implements PokerVoteDao {
+public class InMemoryPokerVoteDaoImpl implements PokerVoteDao {
 
     /**
      * Room:Poker:Votes

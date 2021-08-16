@@ -2,8 +2,8 @@ package net.iyiguo.html5.sse.demo.poker.dao.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.iyiguo.html5.sse.demo.poker.dao.PokerDao;
-import net.iyiguo.html5.sse.demo.poker.entity.Poker;
+import net.iyiguo.html5.sse.demo.poker.dao.RoomDao;
+import net.iyiguo.html5.sse.demo.poker.entity.Room;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,42 +18,44 @@ import javax.annotation.PreDestroy;
  * @date 2021/7/19
  */
 @Repository
-public class PokerMemoryDaoImpl implements PokerDao {
-    private Map<Long, Poker> pokersCache;
+public class InMemoryRoomDaoImpl implements RoomDao {
+
+    private Map<Long, Room> roomsCache;
     private AtomicLong idAtomic;
 
     @PostConstruct
     public void init() {
-        pokersCache = Maps.newConcurrentMap();
+        roomsCache = Maps.newConcurrentMap();
         idAtomic = new AtomicLong(0L);
     }
 
     @PreDestroy
     public void destroy() {
-        pokersCache = null;
+        roomsCache = null;
         idAtomic = null;
     }
 
     @Override
-    public Optional<Poker> getById(Long id) {
-        return Optional.ofNullable(pokersCache.get(id));
+    public Optional<Room> getById(Long id) {
+        return Optional.ofNullable(roomsCache.get(id));
     }
 
     @Override
-    public List<Poker> findAll() {
-        return Lists.newArrayList(pokersCache.values());
+    public List<Room> findAll() {
+        return Lists.newArrayList(roomsCache.values());
     }
 
     @Override
-    public Poker save(Poker poker) {
+    public Room save(Room room) {
         Long id = idAtomic.addAndGet(1L);
-        poker.setId(id);
-        pokersCache.put(id, poker);
-        return poker;
+        room.setId(id);
+        roomsCache.put(id, room);
+        return room;
     }
 
     @Override
-    public Poker delById(Long id) {
-        return pokersCache.remove(id);
+    public Room delById(Long id) {
+        return roomsCache.remove(id);
     }
+
 }
