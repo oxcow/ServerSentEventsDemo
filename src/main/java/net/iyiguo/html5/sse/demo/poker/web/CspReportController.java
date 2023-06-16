@@ -13,8 +13,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.iyiguo.html5.sse.demo.poker.web.dto.CspVo;
 
 /**
+ * <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP">内容安全策略（CSP）</a>
+ *
  * @author William.li
  * @date 2021/8/5
+ * @see net.iyiguo.html5.sse.demo.poker.config.HttpHeaderFilter
  */
 @RestController
 @RequestMapping("/csp-report")

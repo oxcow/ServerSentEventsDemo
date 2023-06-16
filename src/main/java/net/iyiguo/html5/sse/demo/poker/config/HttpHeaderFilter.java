@@ -19,9 +19,11 @@ public class HttpHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        httpServletResponse.setHeader(
-                // "Content-Security-Policy", "default-src 'self'; report-uri /demo/report");
-                "Content-Security-Policy-Report-Only", "default-src 'self'; report-uri /csp-report/");
+        httpServletResponse.setHeader("Content-Security-Policy",
+                "default-src 'self';script-src 'self' libs.baidu.com 'unsafe-inline'; style-src 'self' https://cdn.bootcdn.net https://unpkg.com");
+        // only report
+        httpServletResponse.setHeader("Content-Security-Policy-Report-Only",
+                httpServletResponse.getHeader("Content-Security-Policy") + ";report-uri /csp-report/");
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
