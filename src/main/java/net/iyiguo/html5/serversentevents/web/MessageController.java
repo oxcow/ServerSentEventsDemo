@@ -27,7 +27,7 @@ public class MessageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageController.class);
 
-    private ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
 
     @Autowired
     private MessageService messageService;
