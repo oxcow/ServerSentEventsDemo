@@ -29,7 +29,7 @@ import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVotesVo;
 public class PokerMessageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokerMessageService.class);
 
-    private AtomicLong atomicLong = new AtomicLong(1);
+    private final AtomicLong atomicLong = new AtomicLong(1);
 
     @Autowired
     private ObjectMapper jacksonObjectMapper;
@@ -59,7 +59,7 @@ public class PokerMessageService {
         object = roomBroadcastService.subscribe(roomId, pokerId, lastEventId, sseEmitter);
         LOGGER.info("Poker【{}】成功进入房间【{}】。广播消息队列.{},{}", pokerId, roomId, lastEventId, sseEmitter);
 
-        eventPublisher.publishEvent(new EntityCreatedEvent(object.get()));
+        object.ifPresent(msg -> eventPublisher.publishEvent(new EntityCreatedEvent<>(msg)));
 
         return sseEmitter;
     }

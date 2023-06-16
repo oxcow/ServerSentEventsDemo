@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
 public class PokerConfig {
 
     @Bean
-    public FilterRegistrationBean registrationBean() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<HttpHeaderFilter> registrationBean() {
+        FilterRegistrationBean<HttpHeaderFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new HttpHeaderFilter());
         registration.addUrlPatterns("/demo/*");
         registration.setName("HttpHeaderFilter");

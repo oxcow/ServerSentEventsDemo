@@ -23,22 +23,17 @@ import net.iyiguo.html5.sse.demo.poker.model.PokerMessage;
 public class RoomBroadcastService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomBroadcastService.class);
 
-    private Set<PokerEmitter> broadcastUsers = Sets.newConcurrentHashSet();
+    private final Set<PokerEmitter> broadcastUsers = Sets.newConcurrentHashSet();
 
     public Set<PokerEmitter> getBroadcastUsers() {
         return broadcastUsers;
     }
 
     public Optional<PokerEmitter> getRoomBroadcastObject(Long roomId, Long pokerId) {
-        Optional<PokerEmitter> object = broadcastUsers.stream()
+        return broadcastUsers.stream()
                 .filter(obj -> obj.getRoomId().equals(roomId))
                 .filter(obj -> obj.getPokerId().equals(pokerId))
                 .findFirst();
-        if (object.isPresent()) {
-            return Optional.ofNullable(object.get());
-        } else {
-            return Optional.empty();
-        }
     }
 
     public Optional<PokerEmitter> subscribe(Long roomId, Long pokerId, Long lastEventId, SseEmitter sseEmitter) {

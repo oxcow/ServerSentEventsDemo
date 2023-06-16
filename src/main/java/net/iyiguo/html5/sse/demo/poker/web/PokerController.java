@@ -29,11 +29,11 @@ import java.util.Objects;
 public class PokerController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PokerController.class);
 
-    private PokerMessageService pokerMessageService;
+    private final PokerMessageService pokerMessageService;
 
-    private RoomPokersService roomPokersService;
+    private final RoomPokersService roomPokersService;
 
-    private PokerVoteService pokerVoteService;
+    private final PokerVoteService pokerVoteService;
 
     @Autowired
     private PokerService pokerService;
@@ -75,7 +75,7 @@ public class PokerController {
             PokerEvent pokerEvent = new PokerEvent(pokerId, roomNo, PokerActionEnum.OFFLINE);
             pokerMessageService.handlePokerEvent(pokerEvent);
 
-            LOGGER.info("Poker【{}】离开房间【{}】。{}", pokerId, roomNo);
+            LOGGER.info("Poker【{}】离开房间【{}】", pokerId, roomNo);
         }
         return true;
     }

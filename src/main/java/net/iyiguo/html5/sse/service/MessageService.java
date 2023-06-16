@@ -23,9 +23,9 @@ public class MessageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
-    private Map<Long, Message> messageMap = Maps.newConcurrentMap();
+    private final Map<Long, Message> messageMap = Maps.newConcurrentMap();
 
-    private AtomicLong atomicLong = new AtomicLong(1);
+    private final AtomicLong atomicLong = new AtomicLong(1);
 
     public void addMessage(Message message) {
         messageMap.put(message.getId(), message);
@@ -49,7 +49,7 @@ public class MessageService {
                 .sorted()
                 .findFirst();
 
-        return ceilingKey.isPresent() ? messageMap.get(ceilingKey.get()) : null;
+        return ceilingKey.map(messageMap::get).orElse(null);
     }
 
     @Scheduled(cron = "2/15 * * * * ?")

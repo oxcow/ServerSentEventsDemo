@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class RoomService {
-    private RoomDao roomDao;
+    private final RoomDao roomDao;
 
     public RoomService(RoomDao roomDao) {
         this.roomDao = roomDao;

@@ -14,7 +14,7 @@ public final class ThreadUtils {
         try {
             Thread.sleep(mills);
         } catch (InterruptedException ie) {
-            LOGGER.warn("thread sleep exception. {}", ie);
+            LOGGER.warn("thread sleep exception. {}", ie.getMessage(), ie);
         }
     }
 }

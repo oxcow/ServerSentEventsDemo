@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/demo/broadcast")
 public class BroadcastController {
 
-    private PokerMessageService pokerMessageService;
+    private final PokerMessageService pokerMessageService;
 
     public BroadcastController(PokerMessageService pokerMessageService) {
         this.pokerMessageService = pokerMessageService;

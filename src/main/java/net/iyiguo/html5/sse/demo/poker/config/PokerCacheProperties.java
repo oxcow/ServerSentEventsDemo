@@ -12,9 +12,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "poker-cache")
 public class PokerCacheProperties {
 
-    private List<Room> rooms = Lists.newArrayList();
+    private final List<Room> rooms = Lists.newArrayList();
 
-    private List<Poker> pokers = Lists.newArrayList();
+    private final List<Poker> pokers = Lists.newArrayList();
 
     public List<Room> getRooms() {
         return rooms;

@@ -38,9 +38,9 @@ public class RoomPokersService {
     @Autowired
     private PokerCacheProperties pokerCacheProperties;
 
-    private RoomDao roomDao;
-    private PokerDao pokerDao;
-    private PokerVoteDao pokerVoteDao;
+    private final RoomDao roomDao;
+    private final PokerDao pokerDao;
+    private final PokerVoteDao pokerVoteDao;
 
     public RoomPokersService(RoomDao roomDao, PokerDao pokerDao, PokerVoteDao pokerVoteDao) {
         this.roomDao = roomDao;
@@ -52,8 +52,8 @@ public class RoomPokersService {
     public void init() {
         roomPokersCache = HashMultimap.create();
 
-        pokerCacheProperties.getRooms().forEach(room -> roomDao.save(room));
-        pokerCacheProperties.getPokers().forEach(poker -> pokerDao.save(poker));
+        pokerCacheProperties.getRooms().forEach(roomDao::save);
+        pokerCacheProperties.getPokers().forEach(pokerDao::save);
     }
 
     public boolean hadEnterRoom(Long pokerId, Long roomNo) {
@@ -93,10 +93,7 @@ public class RoomPokersService {
 
     public boolean pokerLeaveRoom(Long pokerId, Long roomNo) {
         Optional<Poker> pokerOptional = pokerDao.getById(pokerId);
-        if (pokerOptional.isPresent()) {
-            return roomPokersCache.remove(roomNo, pokerOptional.get());
-        }
-        return false;
+        return pokerOptional.filter(poker -> roomPokersCache.remove(roomNo, poker)).isPresent();
     }
 
     private Map<Long, Integer> getPokerVotes(Long roomNo) {

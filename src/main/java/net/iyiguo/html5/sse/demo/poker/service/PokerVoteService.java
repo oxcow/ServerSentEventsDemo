@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class PokerVoteService {
-    private PokerVoteDao pokerVoteDao;
+    private final PokerVoteDao pokerVoteDao;
 
     public PokerVoteService(PokerVoteDao pokerVoteDao) {
         this.pokerVoteDao = pokerVoteDao;

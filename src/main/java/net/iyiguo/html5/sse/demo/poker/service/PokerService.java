@@ -17,7 +17,7 @@ import net.iyiguo.html5.sse.demo.poker.web.dto.PokerVo;
  */
 @Service
 public class PokerService {
-    private PokerDao pokerDao;
+    private final PokerDao pokerDao;
 
     public PokerService(PokerDao pokerDao) {
         this.pokerDao = pokerDao;

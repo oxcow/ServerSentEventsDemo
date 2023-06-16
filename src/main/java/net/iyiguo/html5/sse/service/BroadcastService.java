@@ -163,11 +163,11 @@ public class BroadcastService {
         });
     }
 
-    private class BroadcastObject {
+    private static class BroadcastObject {
 
-        private String name;
+        private final String name;
         private long lastEventId;
-        private SseEmitter emitter;
+        private final SseEmitter emitter;
 
         BroadcastObject(String name, long lastEventId, SseEmitter emitter) {
             this.name = name;
