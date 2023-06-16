@@ -4,3 +4,5 @@ server:
 spring:
   profiles:
     active: dev # 优先级低于命令行启动参数 --spring
+  freemarker:
+    suffix: .ftl
